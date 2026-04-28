@@ -1,0 +1,35 @@
+column_name,type,raw_or_derived,description,generation_logic
+business_name,string,raw,SME page/business name,Chosen from a fixed catalog of fake businesses; repeated across many posts.
+sector,string,raw,Business category/sector,Fixed per business profile (restaurant/cafe/clinic/store/gym/beauty_salon/bakery/pharmacy/education_center/electronics_store).
+followers_count,integer,raw,Followers count for the business account,Stable base followers per business with small per-post noise (~2% std).
+post_date,date,raw,Post date (YYYY-MM-DD),Random date between 2025-01-01 and 2025-12-31.
+posting_hour,integer,raw,Hour of posting (0-23),Generated from a distribution peaked at 12-14 and 18-22; mostly between 9 and 23.
+day_of_week,string,raw,Day name derived from post_date,Derived from post_date using datetime weekday.
+month,integer,raw,Month number derived from post_date,Derived from post_date month.
+post_type,string,raw,Post format,image/reel/carousel/video weighted (35/35/20/10).
+caption_text,string,raw,Caption text,Template-based generation conditioned on sector/language/city/post_type/promo/themes/CTA/dialect; may include hashtags/emojis.
+caption_length,integer,raw,Length of caption_text in characters,Derived as len(caption_text).
+hashtags_count,integer,raw,Number of hashtags in caption_text,Derived by regex extraction of hashtags in caption_text.
+emoji_count,integer,raw,Number of emojis in caption_text,Derived by counting emojis from a controlled emoji pool in caption_text.
+likes_count,integer,raw,Likes count,Generated as a sector-adjusted fraction of views_count with promo effects and noise.
+comments_count,integer,raw,Comments count,Generated as a fraction of likes_count; boosted by CTA/promo; carousels have slightly higher comment rates.
+views_count,integer,raw,Views count,Generated from followers_count * post_type view range with boosts from posting hour/CTA/promo/hashtags/themes/dialect and lognormal noise.
+language,string,raw,Content language,Weighted choice: Arabic 55%, Mixed 35%, English 10%.
+CTA_present,boolean,raw,Whether caption includes a CTA phrase,Derived by searching CTA phrase list inside caption_text (ensures consistency).
+promo_post,boolean,raw,Whether this is a promotional post,Generated ~30% probability with mild sector/time effects.
+discount_percent,numeric,raw,Discount percent for promos (0 when not promo),If promo_post True choose from {5,10,15,20,25,30,40,50}; else 0.
+mentions_location,boolean,raw,Whether the caption mentions city/location,Derived by checking if business city appears in caption_text.
+religious_theme,boolean,raw,Religious theme indicator,Higher probability in March/April; adds Ramadan/Eid phrases when true.
+patriotic_theme,boolean,raw,Local pride/community theme indicator,Small probability; adds 'support local' style phrases when true.
+arabic_dialect_style,boolean,raw,Local Arabic dialect style indicator,High probability for Arabic/Mixed; almost always false for English.
+engagement_count,integer,derived,Likes + comments,Computed in KPI file.
+engagement_rate_by_followers,float,derived,Engagement per follower,engagement_count / followers_count (safe division).
+like_rate_by_views,float,derived,Likes per view,likes_count / views_count (safe division).
+comment_rate_by_likes,float,derived,Comments per like,comments_count / likes_count (safe division).
+views_per_follower,float,derived,Views per follower,views_count / followers_count (safe division).
+is_high_engagement,boolean,derived,High engagement label,True if engagement_rate_by_followers > 75th percentile.
+posting_time_category,string,derived,Time bucket,morning/afternoon/evening/night derived from posting_hour.
+caption_length_category,string,derived,Caption length bucket,short <90, medium 90-179, long >=180 characters.
+hashtag_intensity,string,derived,Hashtag intensity bucket,none=0, low=1-3, medium=4-8, high=9+ hashtags.
+content_localization_score,integer,derived,Explainable localization score,3*mentions_location + 3*dialect + 2*patriotic + 2*religious.
+
