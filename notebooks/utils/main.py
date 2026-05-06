@@ -2,94 +2,60 @@ import pandas as pd
 from pathlib import Path
 
 
-def display_rules(
-        rules,
-        title,
-        top_n=10
-):
-    """
-    Displays rules in readable format.
-    """
 
-    print("\n" + "=" * 80)
-
-    print(title)
-
-    print("=" * 80)
-
-    if rules.empty:
-
-        print("\nNo rules found.")
-
-        return
-
-    for counter, (_, row) in enumerate(
-            rules.head(top_n).iterrows(),
-            start=1
-    ):
-
-        antecedents = (
-            " + ".join(
-                list(row["antecedents"])
-            )
-        )
-
-        consequents = (
-            " + ".join(
-                list(row["consequents"])
-            )
-        )
-
-        print(f"\nRULE #{counter}")
-
-        print(
-            f"\n{antecedents}"
-        )
-
-        print("  --->  ")
-
-        print(
-            f"{consequents}"
-        )
-
-        print(
-            f"\nConfidence: "
-            f"{row['confidence']:.3f}"
-        )
-
-        print(
-            f"Lift: "
-            f"{row['lift']:.3f}"
-        )
-
-        print("-" * 80)
+from recommendation_system import (
+    generate_recommendations,
+    display_recommendations
+)
 
 
 def main():
-
+    
     BASE_DIR = Path(__file__).resolve().parents[2]
+    data_path = BASE_DIR / "data" / "sample_synthetic_posts.csv"
+    df = pd.read_csv(data_path)
 
     positive_rules = pd.read_pickle(
         BASE_DIR
         / "data"
         / "positive_rules.pkl"
-    )
+)
 
     negative_rules = pd.read_pickle(
         BASE_DIR
         / "data"
         / "negative_rules.pkl"
+)
+
+    user_post = {
+
+    "language": "Arabic",
+
+    "post_type": "image",
+
+    "posting_hour": 10,
+
+    "hashtags_count": 3,
+
+    "caption_length": 70,
+
+    "discount_percent": 0,
+
+    "arabic_dialect_style": True,
+
+    "CTA_present": True,
+
+    "day_of_week": "Saturday"
+}
+
+    recommendations = generate_recommendations(
+        user_post=user_post,
+        positive_rules=positive_rules,
+        negative_rules=negative_rules
     )
 
-    display_rules(
-        positive_rules,
-        title="TOP 10 POSITIVE RULES",
-        top_n=10
-    )
-
-    display_rules(
-        negative_rules,
-        title="TOP 10 NEGATIVE RULES",
+    display_recommendations(
+        recommendations,
         top_n=10
     )
 
