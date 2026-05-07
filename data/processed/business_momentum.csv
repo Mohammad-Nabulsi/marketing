@@ -1,0 +1,41 @@
+business_name,sector,week,latest_rolling_engagement_rate,latest_growth,momentum_class
+Al Amal Dental,clinic,52,0.10829768748008085,0.17610042304551876,inconsistent
+Al Balad Grill,restaurant,49,0.4153718470171044,0.37747352928844924,inconsistent
+Al Hayat Pharmacy,pharmacy,50,0.06439195702686056,-0.07406544268793114,inconsistent
+Al Karmel Boutique,store,51,0.12362855958416623,0.06038907740419375,inconsistent
+Bethlehem Brew Bar,cafe,51,0.3313269932448326,-0.202185652924618,inconsistent
+Bethlehem Lash Bar,beauty_salon,52,0.06591942413736836,0.17975418588898417,inconsistent
+Canaan Threads,store,52,0.07336661164269045,-0.3157774889498297,inconsistent
+Gaza Family Pharmacy,pharmacy,52,0.13087177235977052,0.33228574123195487,inconsistent
+Gaza Gadget Shop,electronics_store,48,0.12864728813924373,0.46416767953666405,inconsistent
+Gaza Glow Salon,beauty_salon,52,0.12575241225242187,-0.5219006369070527,inconsistent
+Gaza Power House,gym,52,0.12267006992266916,-0.035646858803734416,inconsistent
+Gaza Seaside Kitchen,restaurant,52,0.14015712249580134,0.15510294780945721,inconsistent
+Hebron Electronics,electronics_store,50,0.10503301414904158,0.42787967119480497,inconsistent
+Hebron Fresh Bakery,bakery,52,0.2693748986444508,0.195057160453721,inconsistent
+Hebron Study Hub,education_center,52,0.10857639499759038,-0.05956968285858155,inconsistent
+Hebron Table,restaurant,50,0.15637027659805244,-0.2999985009709272,inconsistent
+Iron Club Nablus,gym,49,0.16345440465908256,-0.013851881730492233,inconsistent
+Jericho Date Bakery,bakery,49,0.16310840565888915,0.35911866830351724,inconsistent
+Jericho Physio Hub,clinic,52,0.05954372630414751,-0.011813071069373127,inconsistent
+Laila Hair & Nails,beauty_salon,45,0.3070988341037966,-0.060521662823001754,inconsistent
+Nablus Bites,restaurant,48,0.09115685543830766,-0.09187014129299853,inconsistent
+Nablus Coding Kids,education_center,51,0.204410525268799,0.17301491460481344,inconsistent
+Nablus Coffee Corner,cafe,51,0.22653918958387187,0.0013962641446414459,inconsistent
+Nablus Health Point,pharmacy,50,0.06615677429668178,0.38412072215841864,inconsistent
+Nablus Mobile Center,electronics_store,51,0.33856012477716035,0.5647776939005935,inconsistent
+Nablus Skin Center,clinic,49,0.13597717149576727,-0.137144693334046,inconsistent
+Nablus Sweet Oven,bakery,51,0.2513907279060074,0.08151901366462555,inconsistent
+Olive Tree Learning,education_center,52,0.08117539993429754,-0.14771381358820723,inconsistent
+Qahwa Al-Quds,cafe,52,0.17689861707899532,0.7315794866476766,inconsistent
+Qalqilya Home Store,store,52,0.15346356626290591,0.2764562517498408,inconsistent
+Ramallah Care Pharmacy,pharmacy,52,0.03772931080313595,-0.6089795375065854,inconsistent
+Ramallah English Corner,education_center,50,0.06307836587057726,0.3050438387228185,inconsistent
+Ramallah Fit Hub,gym,52,0.1559492322526204,0.12761558839183396,inconsistent
+Ramallah Roastery,cafe,50,0.10610110650170784,0.6821936401884152,inconsistent
+Saj & Manakish House,bakery,51,0.22663904258980697,0.03321761237243659,inconsistent
+Sama Beauty Studio,beauty_salon,51,0.18068894430316407,0.2449408925482901,inconsistent
+Shifa Family Clinic,clinic,47,0.06256530866624573,-0.004153427731486969,inconsistent
+Strong Roots Gym,gym,50,0.10564750215548051,0.062254921849100864,inconsistent
+TechSouq Ramallah,electronics_store,52,0.1745160754406476,0.024536136182895074,inconsistent
+Tulkarm Streetwear,store,49,0.26972118657623273,-0.2561012546860374,inconsistent
