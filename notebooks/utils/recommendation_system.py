@@ -442,15 +442,6 @@ def display_recommendations(
     Displays recommendations.
     """
 
-    print("\n" + "=" * 80)
-
-    print(
-        "TOP ENGAGEMENT "
-        "RECOMMENDATIONS"
-    )
-
-    print("=" * 80)
-
     if recommendations_df.empty:
 
         print(

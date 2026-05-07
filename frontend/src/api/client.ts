@@ -57,3 +57,24 @@ export async function getRecommendations(datasetId: string): Promise<DashboardRe
   return res.data;
 }
 
+export async function getSimilarBusinessOptions(datasetId: string): Promise<DashboardResponse> {
+  const res = await api.get<DashboardResponse>(`/api/dashboard/similar-businesses/${datasetId}/businesses`);
+  return res.data;
+}
+
+export async function getSimilarBusinessRecommendations(
+  datasetId: string,
+  businessName: string,
+  sector?: string,
+  topN = 5
+): Promise<DashboardResponse> {
+  const res = await api.get<DashboardResponse>(`/api/dashboard/similar-businesses/${datasetId}`, {
+    params: {
+      business_name: businessName,
+      sector,
+      top_n: topN
+    }
+  });
+  return res.data;
+}
+
