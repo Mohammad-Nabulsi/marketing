@@ -1,0 +1,41 @@
+business_name,sector,recommended_post_type,recommended_posting_time,recommended_caption_style,recommended_CTA_present,recommended_mentions_location,recommended_arabic_dialect_style,avg_potential_uplift
+Al Amal Dental,clinic,reel,afternoon,medium,True,True,True,0.17540098742843643
+Al Balad Grill,restaurant,reel,afternoon,medium,True,True,True,0.06033979239424077
+Al Hayat Pharmacy,pharmacy,reel,afternoon,medium,True,False,True,0.12637475520945754
+Al Karmel Boutique,store,carousel,afternoon,medium,True,True,True,0.06924968995619954
+Bethlehem Brew Bar,cafe,image,evening,medium,True,False,True,0.04813520727495212
+Bethlehem Lash Bar,beauty_salon,image,afternoon,medium,True,True,True,0.0995766273040584
+Canaan Threads,store,image,afternoon,medium,True,True,True,0.07363148098567125
+Gaza Family Pharmacy,pharmacy,reel,afternoon,medium,True,True,True,0.14448111087854537
+Gaza Gadget Shop,electronics_store,carousel,afternoon,medium,True,False,True,0.05022778464533297
+Gaza Glow Salon,beauty_salon,carousel,afternoon,medium,True,True,True,0.08597252148989297
+Gaza Power House,gym,reel,afternoon,medium,True,True,True,0.11441009476314414
+Gaza Seaside Kitchen,restaurant,reel,afternoon,medium,True,True,True,0.09218118388435176
+Hebron Electronics,electronics_store,carousel,afternoon,medium,True,True,True,0.09438758970310908
+Hebron Fresh Bakery,bakery,image,afternoon,medium,True,True,True,0.04908264408761162
+Hebron Study Hub,education_center,reel,afternoon,medium,True,True,True,0.12253841534053823
+Hebron Table,restaurant,reel,afternoon,medium,True,True,True,0.0904080272942646
+Iron Club Nablus,gym,carousel,afternoon,medium,True,True,True,0.08445535547919229
+Jericho Date Bakery,bakery,image,afternoon,medium,True,True,True,0.04775185516180048
+Jericho Physio Hub,clinic,reel,afternoon,medium,True,True,True,0.13166732968747985
+Laila Hair & Nails,beauty_salon,reel,afternoon,medium,True,True,True,-0.002893393519632466
+Nablus Bites,restaurant,reel,evening,medium,True,True,True,0.04913871655507229
+Nablus Coding Kids,education_center,image,afternoon,medium,True,True,True,0.10428568373394859
+Nablus Coffee Corner,cafe,image,afternoon,medium,True,False,True,0.021226913221775893
+Nablus Health Point,pharmacy,image,afternoon,medium,True,True,True,0.1470739073674361
+Nablus Mobile Center,electronics_store,image,afternoon,medium,True,False,True,0.03622458549383542
+Nablus Skin Center,clinic,image,afternoon,medium,True,True,True,0.13800169161569223
+Nablus Sweet Oven,bakery,image,night,medium,True,False,True,0.02406147085687142
+Olive Tree Learning,education_center,image,afternoon,medium,True,True,True,0.11944639027309323
+Qahwa Al-Quds,cafe,reel,afternoon,medium,True,True,True,0.059026333199694934
+Qalqilya Home Store,store,image,afternoon,medium,True,True,True,0.049697139478979344
+Ramallah Care Pharmacy,pharmacy,image,afternoon,medium,True,False,True,0.14131643044369346
+Ramallah English Corner,education_center,reel,evening,medium,True,True,True,0.10903543077848214
+Ramallah Fit Hub,gym,image,afternoon,medium,True,False,True,0.10767442569645977
+Ramallah Roastery,cafe,reel,afternoon,medium,True,True,True,0.053110753233712164
+Saj & Manakish House,bakery,reel,evening,medium,True,True,True,0.07672808809249657
+Sama Beauty Studio,beauty_salon,reel,afternoon,medium,True,True,True,0.09096837677225487
+Shifa Family Clinic,clinic,image,evening,medium,True,True,True,0.12912301793887102
+Strong Roots Gym,gym,image,afternoon,medium,True,False,True,0.08120364443319276
+TechSouq Ramallah,electronics_store,image,afternoon,medium,True,True,True,0.08689998386848603
+Tulkarm Streetwear,store,reel,night,medium,True,True,True,0.04586505038650065
