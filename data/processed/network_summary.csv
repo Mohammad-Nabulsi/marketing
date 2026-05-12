@@ -1,10 +1,10 @@
 metric,value
-input_rows,1000
-cleaned_rows,1000
+input_rows,656
+cleaned_rows,656
 chosen_threshold_method,existing_engagement_level
 chosen_min_weight,5
-nodes_count,60
-edges_count,309
-engagement_level_low_engagement,334
-engagement_level_medium_engagement,332
-engagement_level_high_engagement,334
+nodes_count,65
+edges_count,190
+engagement_level_low_engagement,219
+engagement_level_medium_engagement,218
+engagement_level_high_engagement,219
