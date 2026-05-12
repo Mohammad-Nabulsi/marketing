@@ -1,4 +1,4 @@
 method,avg_percentile,percentile_std,composite_score
-score_engagement_only,62.5,28.30692585361489,1.0
-score_sector_z,62.5,28.306925853614892,0.5
-score_balanced,62.5,28.306925853614896,0.0
+score_engagement_only,53.84615384615385,29.14811488674416,1.0
+score_sector_z,53.84615384615385,29.14811488674416,1.0
+score_balanced,53.84615384615385,29.148114886744164,0.0
