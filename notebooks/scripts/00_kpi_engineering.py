@@ -69,10 +69,8 @@ display(clean_df.head())
 # Engineer KPIs and Validate Division Safety
 
 df = engineer_kpis(clean_df)
-df["post_date"] = pd.to_datetime(
-    df["post_date"],
-    errors="coerce"
-)
+# clean_dataset already normalizes post_date robustly; keep as datetime here.
+df["post_date"] = pd.to_datetime(df["post_date"], errors="coerce")
 rate_cols = ["engagement_rate", "like_rate", "comment_rate", "view_rate", "view_engagement_rate"]
 invalid = {c: int(np.isinf(df[c]).sum() + df[c].isna().sum()) for c in rate_cols}
 print("Invalid rate values:", invalid)

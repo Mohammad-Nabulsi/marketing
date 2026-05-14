@@ -76,7 +76,17 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         if col not in out.columns:
             out[col] = np.nan
 
-    out["post_date"] = pd.to_datetime(out["post_date"], errors="coerce")
+    # Handle mixed post_date inputs:
+    # - epoch milliseconds as numbers/number-like strings
+    # - regular datetime strings
+    raw_post_date = out["post_date"].copy()
+    post_date_num = pd.to_numeric(raw_post_date, errors="coerce")
+    out["post_date"] = pd.to_datetime(post_date_num, unit="ms", errors="coerce")
+    mask_non_numeric = post_date_num.isna()
+    if mask_non_numeric.any():
+        out.loc[mask_non_numeric, "post_date"] = pd.to_datetime(
+            raw_post_date.loc[mask_non_numeric], errors="coerce"
+        )
     out = out.dropna(subset=["post_date"]).copy()
 
     default_cat = {
