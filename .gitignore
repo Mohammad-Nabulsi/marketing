@@ -47,3 +47,5 @@ path/to/local-model/
 *.pt
 *.pth
 *.safetensors
+venv-bert/
+notebooks/.local_models/
