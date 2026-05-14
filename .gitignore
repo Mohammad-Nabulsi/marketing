@@ -34,3 +34,6 @@ backend/storage/reports/**
 !backend/storage/reports/.gitkeep
 
 bert-venv/
+bert-venv/
+.local_models/
+bert-venv/
