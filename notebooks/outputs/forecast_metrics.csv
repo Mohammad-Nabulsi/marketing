@@ -1,0 +1,3 @@
+model,aggregation,changepoint_prior_scale,seasonality_mode,MAE,RMSE,MAPE,composite_score
+exp_smoothing_fallback,monthly,,,0.011619360416178852,0.013385797225341112,132.2459020140106,2.0
+exp_smoothing_fallback,weekly,,,0.013695009407439684,0.02817943092138446,87.92491763028252,1.0

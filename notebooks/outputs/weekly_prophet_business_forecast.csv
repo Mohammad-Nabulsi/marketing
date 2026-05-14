@@ -1,0 +1,13 @@
+ds,y,yhat,yhat_lower,yhat_upper,level,entity,model,aggregation,changepoint_prior_scale,seasonality_mode,forecast_type
+2026-04-20,0.007405275779376466,0.0032672633484531863,,,business,Vanilla Palestine,prophet,weekly,0.1,additive,test
+2026-04-27,0.004700239808153433,0.006217211023889165,,,business,Vanilla Palestine,prophet,weekly,0.1,additive,test
+2026-05-04,0.0070575539568345,0.04977979459482308,,,business,Vanilla Palestine,prophet,weekly,0.1,additive,test
+2026-05-11,0.00040287769784165,0.12150525883496263,,,business,Vanilla Palestine,prophet,weekly,0.1,additive,test
+2026-05-18,,-0.008385460816725629,-0.009796309505588935,-0.0069774360904445035,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-05-25,,-0.008336424491752892,-0.009867021179791557,-0.006853750263853924,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-06-01,,0.004104772892437434,0.0026798161224324815,0.005526236517139808,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-06-08,,0.009695642146772604,0.008304319305122553,0.01108722179972114,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-06-15,,-0.010440499931139267,-0.011723772398897521,-0.008995543609485904,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-06-22,,-0.03594099546632008,-0.03740665632985048,-0.03457617870280078,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-06-29,,-0.010068391752728362,-0.011464212012063787,-0.008573802621403925,business,Vanilla Palestine,prophet,weekly,0.1,additive,future
+2026-07-06,,0.09671883954912851,0.0953661071070318,0.09809382123908252,business,Vanilla Palestine,prophet,weekly,0.1,additive,future

@@ -1,0 +1,17 @@
+ds,y,yhat,yhat_lower,yhat_upper,forecast_type,business_name,model,aggregation,target,changepoint_prior_scale,seasonality_mode,yearly_seasonality
+2026-03-02,0.0085539568,0.01661202237168794,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-03-09,0.014428057550000001,0.01667678161782588,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-03-16,0.013503597150000001,0.01674154086396382,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-03-23,0.00849280575,0.01680630011010176,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-03-30,0.01286690645,0.0168710593562397,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-04-06,0.01074460435,0.01693581860237764,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-04-13,0.008949640299999999,0.01700057784851558,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-04-20,0.010834532400000001,0.01706533709465352,,,test,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-04-27,,0.0143737051463983,-0.000518829669003275,0.029872545888610602,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-05-04,,0.014409627456872662,-0.00023830730437762005,0.028713988289914522,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-05-11,,0.014445549767347028,-0.001039152253743077,0.0294857590969301,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-05-18,,0.014481472077821394,4.457640622940884e-05,0.028729671793100646,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-05-25,,0.01451739438829576,0.0008819065484451838,0.0278639015114233,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-06-01,,0.014553316698770127,0.0003875326848087787,0.029872464126992973,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-06-08,,0.014589239009244491,-0.0005644060058890089,0.029419690050050035,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False
+2026-06-15,,0.014625161319718857,-0.00021848788541734994,0.029243022601875078,future,Vanilla Palestine,prophet,weekly,engagement_rate_clipped,0.01,additive,False

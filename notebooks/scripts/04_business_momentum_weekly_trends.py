@@ -1,159 +1,329 @@
 # 04 Business Momentum Weekly Trends
-# Classify business momentum with rolling windows and threshold experiments.
+# Sector-level trends + Business-level momentum analysis
 
 import warnings
 import sys
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from IPython.display import display
 
 warnings.filterwarnings("ignore")
-PROJECT_ROOT = Path.cwd().resolve()
 
-if not (PROJECT_ROOT / "utils" / "utils.py").exists():
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 
-    if (PROJECT_ROOT / "notebooks" / "utils" / "utils.py").exists():
-        PROJECT_ROOT = PROJECT_ROOT / "notebooks"
+# Outputs folder
+OUTPUTS_DIR = PROJECT_ROOT / "notebooks" / "outputs"
+OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    elif (PROJECT_ROOT.parent / "utils" / "utils.py").exists():
-        PROJECT_ROOT = PROJECT_ROOT.parent
+sys.path.insert(0, str(NOTEBOOKS_DIR))
 
-# Add project root to Python path
-sys.path.insert(0, str(PROJECT_ROOT))
-
-from utils.utils import ensure_project_dirs, load_raw_dataset, clean_dataset, PROCESSED_DIR, REPORTS_DIR, FIGURES_DIR
-from utils.features import engineer_kpis, build_post_feature_sets, aggregate_business_features
-from utils.evaluation import regression_metrics, rank_models
+from utils.utils import ensure_project_dirs, PROCESSED_DIR, FIGURES_DIR
 from utils.visualization import set_plot_style, save_figure
-from pathlib import Path
 
 set_plot_style()
 ensure_project_dirs()
 
-
-
-PROJECT_ROOT = Path(__file__).resolve()
-
-while PROJECT_ROOT.name != "marketing":
-    PROJECT_ROOT = PROJECT_ROOT.parent
-
-RAW_DATA_PATH = PROJECT_ROOT / "jsons" / "all_final_appended.json"
-
-if not RAW_DATA_PATH.exists():
-    RAW_DATA_PATH = PROJECT_ROOT / "synthetic_generator" / "synthetic_social_media_posts.csv"
-
 KPI_PATH = PROJECT_ROOT / "data" / "processed" / "kpi_dataset.csv"
 
-# Load KPI Dataset and Weekly Aggregation
+
+# Load KPI Dataset
 
 
-if KPI_PATH.exists():
-    df = pd.read_csv(KPI_PATH, parse_dates=["post_date"])
-else:
-    df = engineer_kpis(clean_dataset(load_raw_dataset(RAW_DATA_PATH)))
-df.head()
+# df = pd.read_json(KPI_PATH)
+df = pd.read_csv(KPI_PATH)
 
 
-# Overall Weekly Trends
+df["post_date"] = pd.to_datetime(df["post_date"], unit="ms", errors="coerce")
 
-weekly_trends = df.groupby("week", as_index=False).agg(
-    total_engagement=("engagement", "sum"),
-    avg_engagement_rate=("engagement_rate", "mean"),
-    total_likes=("likes_count", "sum"),
-    total_comments=("comments_count", "sum"),
-    total_views=("views_count", "sum"),
-    total_posts=("business_name", "size"),
-).sort_values("week")
+required_columns = [
+    "business_name",
+    "sector",
+    "post_date",
+    "engagement",
+    "engagement_rate",
+    "week",
+    "likes_count",
+    "comments_count",
+    "views_count",
+]
 
-weekly_trends["engagement_growth"] = (
-    weekly_trends["total_engagement"]
+missing_columns = [col for col in required_columns if col not in df.columns]
+
+if missing_columns:
+    raise ValueError(
+        "This script expects the dataset exported from 00_kpi_engineering. "
+        f"Missing columns: {missing_columns}"
+    )
+
+df = df.dropna(subset=["business_name", "sector", "week"])
+
+# 3 Helper Function
+
+
+def classify_trend(growth, threshold=0.10):
+    if growth > threshold:
+        return "improving"
+    elif growth < -threshold:
+        return "declining"
+    else:
+        return "stable"
+
+# Sector Weekly Trends
+# This answers:
+# Is each sector improving, declining, or stable over time?
+
+sector_weekly = (
+    df.groupby(["sector", "week"], as_index=False)
+    .agg(
+        total_engagement=("engagement", "sum"),
+        avg_engagement_rate=("engagement_rate", "mean"),
+        total_likes=("likes_count", "sum"),
+        total_comments=("comments_count", "sum"),
+        total_views=("views_count", "sum"),
+        total_posts=("business_name", "size"),
+        active_businesses=("business_name", "nunique"),
+    )
+    .sort_values(["sector", "week"])
+)
+
+sector_weekly["sector_growth"] = (
+    sector_weekly.groupby("sector")["avg_engagement_rate"]
     .pct_change()
     .replace([np.inf, -np.inf], np.nan)
     .fillna(0)
 )
 
-weekly_trends["trend_class"] = np.where(
-    weekly_trends["engagement_growth"] > 0.10,
-    "improving",
-    np.where(
-        weekly_trends["engagement_growth"] < -0.10,
-        "declining",
-        "stable"
+sector_weekly["sector_trend_class"] = sector_weekly["sector_growth"].apply(
+    lambda x: classify_trend(x, threshold=0.10)
+)
+
+# Latest sector status
+sector_momentum = (
+    sector_weekly.groupby("sector", as_index=False)
+    .tail(1)[
+        [
+            "sector",
+            "week",
+            "avg_engagement_rate",
+            "sector_growth",
+            "sector_trend_class",
+            "total_posts",
+            "active_businesses",
+        ]
+    ]
+    .rename(
+        columns={
+            "avg_engagement_rate": "latest_sector_engagement_rate",
+            "sector_growth": "latest_sector_growth",
+            "sector_trend_class": "sector_momentum_class",
+        }
     )
 )
 
-weekly_trends.head()
+
+# Business Weekly Trends
+
+# This answers:
+# Is each business improving, declining, stable, or inconsistent?
+
+business_weekly = (
+    df.groupby(["sector", "business_name", "week"], as_index=False)
+    .agg(
+        engagement_rate=("engagement_rate", "mean"),
+        engagement=("engagement", "mean"),
+        posts_count=("business_name", "size"),
+        likes_count=("likes_count", "sum"),
+        comments_count=("comments_count", "sum"),
+        views_count=("views_count", "sum"),
+    )
+    .sort_values(["sector", "business_name", "week"])
+)
+
+ROLLING_WINDOW = 3
+GROWTH_THRESHOLD = 0.10
+
+business_weekly["rolling_engagement_rate"] = (
+    business_weekly.groupby("business_name")["engagement_rate"]
+    .transform(lambda s: s.rolling(ROLLING_WINDOW, min_periods=1).mean())
+)
+
+business_weekly["business_growth"] = (
+    business_weekly.groupby("business_name")["rolling_engagement_rate"]
+    .pct_change()
+    .replace([np.inf, -np.inf], np.nan)
+    .fillna(0)
+)
+
+business_weekly["trend_class"] = business_weekly["business_growth"].apply(
+    lambda x: classify_trend(x, threshold=GROWTH_THRESHOLD)
+)
+
+# Detect inconsistent businesses
+state_counts = (
+    business_weekly.groupby("business_name")["trend_class"]
+    .nunique()
+    .rename("n_states")
+)
+
+business_weekly = business_weekly.merge(
+    state_counts,
+    on="business_name",
+    how="left"
+)
+
+business_weekly["final_trend_class"] = np.where(
+    business_weekly["n_states"] >= 3,
+    "inconsistent",
+    business_weekly["trend_class"]
+)
+
+business_momentum = (
+    business_weekly.groupby(["sector", "business_name"], as_index=False)
+    .tail(1)[
+        [
+            "sector",
+            "business_name",
+            "week",
+            "rolling_engagement_rate",
+            "business_growth",
+            "final_trend_class",
+            "posts_count",
+        ]
+    ]
+    .rename(
+        columns={
+            "rolling_engagement_rate": "latest_rolling_engagement_rate",
+            "business_growth": "latest_business_growth",
+            "final_trend_class": "business_momentum_class",
+        }
+    )
+)
+
+# 6) Compare Business With Sector
+# This gives real business value: Is the business performing better or worse than its sector?
+
+comparison = business_momentum.merge(
+    sector_momentum[
+        [
+            "sector",
+            "latest_sector_engagement_rate",
+            "sector_momentum_class",
+        ]
+    ],
+    on="sector",
+    how="left"
+)
+
+comparison["performance_vs_sector"] = np.where(
+    comparison["latest_rolling_engagement_rate"]
+    > comparison["latest_sector_engagement_rate"],
+    "above_sector_average",
+    "below_sector_average",
+)
+
+# Simple Visualizations
 
 
-# Business Weekly Aggregation
+# Plot 1: Sector engagement rate over time Separate weekly engagement trend for each sector
 
-business_weekly = df.groupby(["business_name", "sector", "week"], as_index=False).agg(
-    engagement_rate=("engagement_rate", "mean"),
-    engagement=("engagement", "mean"),
-    posts_count=("business_name", "size"),
-).sort_values(["business_name", "week"])
+sectors = sector_weekly["sector"].unique()
+num_sectors = len(sectors)
 
-business_weekly.head()
+cols = 1
+rows = num_sectors
+
+fig, axes = plt.subplots(rows, cols, figsize=(14, 4 * rows))
+
+if num_sectors == 1:
+    axes = [axes]
+
+for i, sector in enumerate(sectors):
+    temp = sector_weekly[sector_weekly["sector"] == sector].copy()
+
+    axes[i].plot(
+        temp["week"],
+        temp["avg_engagement_rate"],
+        marker="o"
+    )
+
+    axes[i].set_title(f"{sector} Weekly Engagement Trend", fontsize=14)
+    axes[i].set_xlabel("Week", fontsize=11)
+    axes[i].set_ylabel("Avg Engagement Rate", fontsize=11)
+
+    step = max(1, len(temp) // 6)
+    axes[i].set_xticks(range(0, len(temp), step))
+    axes[i].set_xticklabels(
+        temp["week"].iloc[::step],
+        rotation=35,
+        ha="right",
+        fontsize=9
+    )
+
+plt.tight_layout(h_pad=3)
+
+save_figure(
+    fig,
+    FIGURES_DIR,
+    "sector_weekly_engagement_trends_separate.png"
+)
+
+plt.show()
+# Plot 2: Number of businesses by momentum class
+momentum_counts = (
+    business_momentum["business_momentum_class"]
+    .value_counts()
+    .reset_index()
+)
+
+momentum_counts.columns = ["momentum_class", "business_count"]
+
+plt.figure(figsize=(8, 5))
+plt.bar(
+    momentum_counts["momentum_class"],
+    momentum_counts["business_count"],
+)
+
+plt.title("Number of Businesses by Momentum Class")
+plt.xlabel("Momentum Class")
+plt.ylabel("Number of Businesses")
+plt.tight_layout()
+
+plt.savefig(FIGURES_DIR / "business_momentum_class_counts.png")
+plt.show()
+
+# Save Outputs
 
 
-# Rolling Window and Threshold Experiments
+sector_weekly.to_csv(
+    OUTPUTS_DIR / "sector_weekly_trends.csv",
+    index=False,
+)
 
-windows = [2,3,4]
-thresholds = [0.05,0.10,0.15]
-rows, store = [], {}
-# Hyperparameter Experimentation:
-# Test different rolling windows and growth thresholds to choose a stable,
-# interpretable setup for business momentum classification.
-# Values are selected by comparing stability, inconsistency, and clarity.
-for w in windows:
-    for t in thresholds:
-        tmp = business_weekly.copy().copy()
-        tmp["rolling_engagement"] = tmp.groupby("business_name")["engagement_rate"].transform(lambda s: s.rolling(w, min_periods=1).mean())
-        tmp["growth"] = tmp.groupby("business_name")["rolling_engagement"].pct_change().replace([np.inf,-np.inf], np.nan).fillna(0)
-        tmp["trend_class"] = np.where(tmp["growth"] > t, "improving", np.where(tmp["growth"] < -t, "declining", "stable"))
-        changes = tmp.groupby("business_name")["trend_class"].nunique().rename("n_states")
-        tmp = tmp.merge(changes, on="business_name", how="left")
-        tmp["final_class"] = np.where(tmp["n_states"] >= 3, "inconsistent", tmp["trend_class"])
-        final = tmp.groupby("business_name", as_index=False).tail(1)
-        rows.append({
-            "rolling_window": w,
-            "growth_threshold": t,
-            "stable_ratio": (final["final_class"]=="stable").mean(),
-            "inconsistent_ratio": (final["final_class"]=="inconsistent").mean(),
-            "interpretability": 1 - abs(t-0.10) - abs(w-3)*0.05,
-        })
-        store[(w,t)] = tmp
+business_momentum.to_csv(
+    OUTPUTS_DIR / "business_momentum.csv",
+    index=False,
+)
 
-exp = rank_models(pd.DataFrame(rows), higher_is_better_cols=["stable_ratio","interpretability"], lower_is_better_cols=["inconsistent_ratio"])
-# Model/Configuration Ranking:
-# Rank tested configurations and select the best one.
-# Prefer higher stability and interpretability, with lower inconsistency.
-best = exp.iloc[0]
-tmp = store[(int(best["rolling_window"]), float(best["growth_threshold"]))]
-business_momentum = tmp.groupby(["business_name","sector"], as_index=False).tail(1)[["business_name","sector","week","rolling_engagement","growth","final_class"]].rename(columns={"final_class":"momentum_class","rolling_engagement":"latest_rolling_engagement_rate","growth":"latest_growth"})
-business_weekly_trends= tmp[["business_name","sector","week","engagement_rate","rolling_engagement","growth","final_class"]].rename(columns={"final_class":"trend_class"})
+comparison.to_csv(
+    OUTPUTS_DIR / "business_vs_sector_momentum.csv",
+    index=False,
+)
 
 
-# Save Outputs and Insights
-
-business_momentum.to_csv(PROCESSED_DIR / "business_momentum.csv", index=False)
-weekly_trends.to_csv(PROCESSED_DIR / "weekly_trends.csv", index=False)
-business_weekly_trends.to_csv(PROCESSED_DIR / "business_weekly_trends.csv", index=False)
-
-exp.to_csv(REPORTS_DIR / "momentum_experiments.csv", index=False)
-display(exp)
-display(business_momentum.head(15))
-print("Insight: use declining/inconsistent flags for immediate coaching priorities.")
-
-
-#  Business Value
-# This analysis translates social media metrics into actionable business insights instead of only generating numeric outputs.
-# For example:
-# - Weekly trends show whether overall engagement is improving or declining.
-# - Business momentum identifies which businesses need attention.
-# - Momentum classification helps determine whether a business is improving, declining, stable, or inconsistent over time.
-# 
-# This makes the outputs directly useful for coaching decisions, dashboard alerts, and content strategy evaluation.
+# Final Insight
+print("Business Momentum Weekly Trends completed successfully.")
+print()
+print("Generated outputs:")
+print("- sector_weekly_trends.csv")
+print("- sector_momentum.csv")
+print("- business_weekly_trends.csv")
+print("- business_momentum.csv")
+print("- business_vs_sector_momentum.csv")
+print()
+print("Main value:")
+print("1. Sector trends explain how each sector performs over time.")
+print("2. Business momentum explains whether each business is improving, declining, stable, or inconsistent.")
+print("3. Business vs sector comparison shows whether a business is above or below its sector average.")

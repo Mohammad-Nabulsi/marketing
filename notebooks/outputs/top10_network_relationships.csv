@@ -1,0 +1,11 @@
+source,target,relationship,weight
+sector:fashion,post_type:reel,sector_to_post_type,256
+post_type:reel,engagement_level:high_engagement,post_type_to_engagement_level,195
+post_type:reel,engagement_level:medium_engagement,post_type_to_engagement_level,185
+post_type:reel,engagement_level:low_engagement,post_type_to_engagement_level,167
+language:arabic,engagement_level:high_engagement,language_to_engagement_level,154
+language:arabic,engagement_level:low_engagement,language_to_engagement_level,144
+language:arabic,engagement_level:medium_engagement,language_to_engagement_level,131
+sector:cafes/restaurants,post_type:reel,sector_to_post_type,121
+sector:fashion,engagement_level:low_engagement,sector_to_engagement_level,119
+sector:fashion,engagement_level:medium_engagement,sector_to_engagement_level,101

@@ -1,0 +1,241 @@
+source,target,relationship,weight
+business:528 fashion,sector:fashion,business_to_sector,7
+business:99streetwear,sector:fashion,business_to_sector,9
+business:abu shukri restaurant-مطعم حمص ابو شكري,sector:cafes/restaurants,business_to_sector,3
+business:aburob,sector:influencers,business_to_sector,31
+business:al jazeera english,sector:influencers,business_to_sector,2
+business:angel shop ps,sector:fashion,business_to_sector,12
+business:baby bump,sector:fashion,business_to_sector,10
+business:bella kids,sector:fashion,business_to_sector,12
+business:bravo supermarket,sector:supermarkets,business_to_sector,8
+business:drift.for.men,sector:fashion,business_to_sector,2
+business:euromoda,sector:fashion,business_to_sector,8
+business:family market ps,sector:supermarkets,business_to_sector,16
+business:farouj abu alabd,sector:cafes/restaurants,business_to_sector,24
+business:fashion shop ramallah,sector:fashion,business_to_sector,8
+business:fekreebrahem,sector:influencers,business_to_sector,3
+business:ghazala__store غزالة ستور,sector:fashion,business_to_sector,6
+business:grand shop,sector:fashion,business_to_sector,10
+business:grand stores mall,sector:fashion,business_to_sector,9
+business:hala fashion هلا فاشن,sector:fashion,business_to_sector,9
+business:hamdan eldahdouh,sector:influencers,business_to_sector,2
+business:hijjawi fashion - الحجاوي للأزياء,sector:fashion,business_to_sector,11
+business:hulk gym / diaa shabaro,sector:gym,business_to_sector,15
+business:jericho resort village - قرية أريحا السياحية,sector:cafes/restaurants,business_to_sector,9
+business:jumbo supermarket,sector:supermarkets,business_to_sector,11
+business:katusha supermarket,sector:supermarkets,business_to_sector,8
+business:kfc palestine,sector:cafes/restaurants,business_to_sector,16
+business:koton palestine,sector:fashion,business_to_sector,8
+business:loft palestine,sector:fashion,business_to_sector,8
+business:lujain fashion,sector:fashion,business_to_sector,11
+business:mabella - مابيلا,sector:fashion,business_to_sector,9
+business:mas co,sector:fashion,business_to_sector,9
+business:mazaj oriental - مزاج الشرقي,sector:cafes/restaurants,business_to_sector,16
+business:mikkawi 1955,sector:fashion,business_to_sector,9
+business:motaz azaiza,sector:influencers,business_to_sector,20
+business:motaz foundation,sector:influencers,business_to_sector,10
+business:noor restaurant and cafe,sector:cafes/restaurants,business_to_sector,27
+business:nour alsaqa,sector:influencers,business_to_sector,2
+business:orgada burgers,sector:cafes/restaurants,business_to_sector,9
+business:pardo cafe,sector:cafes/restaurants,business_to_sector,3
+business:pulse gym & fitness,sector:gym,business_to_sector,16
+business:rexos café & restaurant,sector:cafes/restaurants,business_to_sector,25
+business:robian restaurant,sector:cafes/restaurants,business_to_sector,20
+business:ronza elegant,sector:fashion,business_to_sector,12
+business:rozal,sector:fashion,business_to_sector,13
+business:shamsboutique,sector:fashion,business_to_sector,14
+business:shawerma w mashawi al helou,sector:cafes/restaurants,business_to_sector,20
+business:supermarket 25st,sector:supermarkets,business_to_sector,8
+business:vanilla palestine,sector:cafes/restaurants,business_to_sector,29
+business:venus boutique / فينوس بوتيك,sector:fashion,business_to_sector,14
+business:vienna restaurant & cafe,sector:cafes/restaurants,business_to_sector,5
+business:wakeup coffee,sector:cafes/restaurants,business_to_sector,22
+business:xtreme fitness ramallah,sector:gym,business_to_sector,8
+business:جروان الدوار,sector:fashion,business_to_sector,14
+business:متجر الأميرات للسيدات,sector:fashion,business_to_sector,12
+business:متجر تبارك للزي الشرعي,sector:fashion,business_to_sector,12
+business:528 fashion,post_type:reel,business_to_post_type,7
+business:99streetwear,post_type:reel,business_to_post_type,9
+business:abu shukri restaurant-مطعم حمص ابو شكري,post_type:post,business_to_post_type,3
+business:aburob,post_type:reel,business_to_post_type,31
+business:al jazeera english,post_type:reel,business_to_post_type,2
+business:angel shop ps,post_type:reel,business_to_post_type,12
+business:baby bump,post_type:reel,business_to_post_type,10
+business:bella kids,post_type:reel,business_to_post_type,12
+business:bravo supermarket,post_type:reel,business_to_post_type,8
+business:drift.for.men,post_type:reel,business_to_post_type,2
+business:euromoda,post_type:reel,business_to_post_type,8
+business:family market ps,post_type:reel,business_to_post_type,16
+business:farouj abu alabd,post_type:image,business_to_post_type,14
+business:farouj abu alabd,post_type:reel,business_to_post_type,10
+business:fashion shop ramallah,post_type:reel,business_to_post_type,8
+business:fekreebrahem,post_type:reel,business_to_post_type,3
+business:ghazala__store غزالة ستور,post_type:reel,business_to_post_type,6
+business:grand shop,post_type:reel,business_to_post_type,10
+business:grand stores mall,post_type:reel,business_to_post_type,8
+business:hala fashion هلا فاشن,post_type:reel,business_to_post_type,9
+business:hamdan eldahdouh,post_type:reel,business_to_post_type,2
+business:hijjawi fashion - الحجاوي للأزياء,post_type:reel,business_to_post_type,11
+business:hulk gym / diaa shabaro,post_type:reel,business_to_post_type,15
+business:jericho resort village - قرية أريحا السياحية,post_type:post,business_to_post_type,9
+business:jumbo supermarket,post_type:reel,business_to_post_type,11
+business:katusha supermarket,post_type:reel,business_to_post_type,8
+business:kfc palestine,post_type:reel,business_to_post_type,16
+business:koton palestine,post_type:reel,business_to_post_type,8
+business:loft palestine,post_type:reel,business_to_post_type,8
+business:lujain fashion,post_type:reel,business_to_post_type,11
+business:mabella - مابيلا,post_type:reel,business_to_post_type,9
+business:mas co,post_type:reel,business_to_post_type,9
+business:mazaj oriental - مزاج الشرقي,post_type:reel,business_to_post_type,16
+business:mikkawi 1955,post_type:reel,business_to_post_type,8
+business:motaz azaiza,post_type:reel,business_to_post_type,20
+business:motaz foundation,post_type:reel,business_to_post_type,10
+business:noor restaurant and cafe,post_type:image,business_to_post_type,17
+business:noor restaurant and cafe,post_type:reel,business_to_post_type,10
+business:nour alsaqa,post_type:reel,business_to_post_type,2
+business:orgada burgers,post_type:image,business_to_post_type,5
+business:orgada burgers,post_type:reel,business_to_post_type,4
+business:pardo cafe,post_type:reel,business_to_post_type,3
+business:pulse gym & fitness,post_type:reel,business_to_post_type,16
+business:rexos café & restaurant,post_type:image,business_to_post_type,10
+business:rexos café & restaurant,post_type:reel,business_to_post_type,15
+business:robian restaurant,post_type:image,business_to_post_type,13
+business:robian restaurant,post_type:reel,business_to_post_type,7
+business:ronza elegant,post_type:reel,business_to_post_type,12
+business:rozal,post_type:reel,business_to_post_type,13
+business:shamsboutique,post_type:reel,business_to_post_type,14
+business:shawerma w mashawi al helou,post_type:image,business_to_post_type,12
+business:shawerma w mashawi al helou,post_type:reel,business_to_post_type,8
+business:supermarket 25st,post_type:reel,business_to_post_type,8
+business:vanilla palestine,post_type:image,business_to_post_type,14
+business:vanilla palestine,post_type:reel,business_to_post_type,15
+business:venus boutique / فينوس بوتيك,post_type:reel,business_to_post_type,14
+business:vienna restaurant & cafe,post_type:reel,business_to_post_type,5
+business:wakeup coffee,post_type:image,business_to_post_type,10
+business:wakeup coffee,post_type:reel,business_to_post_type,12
+business:xtreme fitness ramallah,post_type:reel,business_to_post_type,8
+business:جروان الدوار,post_type:reel,business_to_post_type,14
+business:متجر الأميرات للسيدات,post_type:reel,business_to_post_type,12
+business:متجر تبارك للزي الشرعي,post_type:reel,business_to_post_type,12
+business:528 fashion,language:arabic/english mixed,business_to_language,7
+business:99streetwear,language:arabic/english mixed,business_to_language,9
+business:abu shukri restaurant-مطعم حمص ابو شكري,language:arabic,business_to_language,2
+business:aburob,language:arabic,business_to_language,31
+business:al jazeera english,language:english,business_to_language,2
+business:angel shop ps,language:arabic,business_to_language,11
+business:baby bump,language:arabic,business_to_language,4
+business:baby bump,language:arabic/english mixed,business_to_language,6
+business:bella kids,language:arabic,business_to_language,2
+business:bella kids,language:arabic/english mixed,business_to_language,10
+business:bravo supermarket,language:arabic,business_to_language,8
+business:euromoda,language:english,business_to_language,4
+business:euromoda,language:mixed,business_to_language,4
+business:family market ps,language:arabic,business_to_language,16
+business:farouj abu alabd,language:arabic,business_to_language,24
+business:fashion shop ramallah,language:arabic-english mixed,business_to_language,7
+business:fekreebrahem,language:english,business_to_language,3
+business:ghazala__store غزالة ستور,language:arabic,business_to_language,5
+business:grand shop,language:arabic,business_to_language,8
+business:grand shop,language:arabic/english mixed,business_to_language,2
+business:grand stores mall,language:arabic,business_to_language,8
+business:hala fashion هلا فاشن,language:arabic,business_to_language,4
+business:hala fashion هلا فاشن,language:arabic/english mixed,business_to_language,2
+business:hala fashion هلا فاشن,language:no caption,business_to_language,3
+business:hamdan eldahdouh,language:mixed,business_to_language,2
+business:hijjawi fashion - الحجاوي للأزياء,language:arabic/english mixed,business_to_language,11
+business:hulk gym / diaa shabaro,language:arabic,business_to_language,14
+business:jericho resort village - قرية أريحا السياحية,language:arabic,business_to_language,9
+business:jumbo supermarket,language:arabic,business_to_language,10
+business:katusha supermarket,language:arabic,business_to_language,8
+business:kfc palestine,language:arabic,business_to_language,6
+business:kfc palestine,language:arabic/english mixed,business_to_language,10
+business:koton palestine,language:arabic,business_to_language,2
+business:koton palestine,language:arabic/english mixed,business_to_language,6
+business:loft palestine,language:arabic,business_to_language,6
+business:loft palestine,language:english,business_to_language,2
+business:lujain fashion,language:arabic,business_to_language,4
+business:lujain fashion,language:arabic/english mixed,business_to_language,7
+business:mabella - مابيلا,language:arabic/english mixed,business_to_language,8
+business:mas co,language:arabic,business_to_language,4
+business:mas co,language:no caption,business_to_language,4
+business:mazaj oriental - مزاج الشرقي,language:arabic,business_to_language,15
+business:mikkawi 1955,language:arabic/english mixed,business_to_language,9
+business:motaz azaiza,language:arabic,business_to_language,2
+business:motaz azaiza,language:english,business_to_language,17
+business:motaz foundation,language:english,business_to_language,9
+business:noor restaurant and cafe,language:arabic,business_to_language,26
+business:orgada burgers,language:arabic,business_to_language,9
+business:pardo cafe,language:english,business_to_language,3
+business:pulse gym & fitness,language:arabic,business_to_language,8
+business:pulse gym & fitness,language:english,business_to_language,4
+business:pulse gym & fitness,language:mixed,business_to_language,4
+business:rexos café & restaurant,language:arabic,business_to_language,21
+business:rexos café & restaurant,language:english,business_to_language,3
+business:robian restaurant,language:arabic,business_to_language,20
+business:ronza elegant,language:arabic,business_to_language,12
+business:rozal,language:arabic,business_to_language,13
+business:shamsboutique,language:arabic,business_to_language,8
+business:shamsboutique,language:arabic/english mixed,business_to_language,5
+business:shawerma w mashawi al helou,language:arabic,business_to_language,20
+business:supermarket 25st,language:arabic,business_to_language,4
+business:supermarket 25st,language:english,business_to_language,3
+business:vanilla palestine,language:arabic,business_to_language,22
+business:vanilla palestine,language:english,business_to_language,7
+business:venus boutique / فينوس بوتيك,language:arabic,business_to_language,14
+business:vienna restaurant & cafe,language:arabic,business_to_language,2
+business:vienna restaurant & cafe,language:english,business_to_language,3
+business:wakeup coffee,language:arabic,business_to_language,9
+business:wakeup coffee,language:english,business_to_language,13
+business:xtreme fitness ramallah,language:english,business_to_language,6
+business:جروان الدوار,language:arabic,business_to_language,14
+business:متجر الأميرات للسيدات,language:arabic,business_to_language,12
+business:متجر تبارك للزي الشرعي,language:arabic,business_to_language,8
+business:متجر تبارك للزي الشرعي,language:no caption,business_to_language,4
+sector:cafes/restaurants,post_type:image,sector_to_post_type,95
+sector:cafes/restaurants,post_type:post,sector_to_post_type,12
+sector:cafes/restaurants,post_type:reel,sector_to_post_type,121
+sector:fashion,post_type:post,sector_to_post_type,2
+sector:fashion,post_type:reel,sector_to_post_type,256
+sector:gym,post_type:reel,sector_to_post_type,39
+sector:influencers,post_type:reel,sector_to_post_type,80
+sector:supermarkets,post_type:reel,sector_to_post_type,51
+post_type:image,engagement_level:high_engagement,post_type_to_engagement_level,21
+post_type:image,engagement_level:low_engagement,post_type_to_engagement_level,48
+post_type:image,engagement_level:medium_engagement,post_type_to_engagement_level,26
+post_type:post,engagement_level:high_engagement,post_type_to_engagement_level,3
+post_type:post,engagement_level:low_engagement,post_type_to_engagement_level,4
+post_type:post,engagement_level:medium_engagement,post_type_to_engagement_level,7
+post_type:reel,engagement_level:high_engagement,post_type_to_engagement_level,195
+post_type:reel,engagement_level:low_engagement,post_type_to_engagement_level,167
+post_type:reel,engagement_level:medium_engagement,post_type_to_engagement_level,185
+language:arabic,engagement_level:high_engagement,language_to_engagement_level,154
+language:arabic,engagement_level:low_engagement,language_to_engagement_level,144
+language:arabic,engagement_level:medium_engagement,language_to_engagement_level,131
+language:arabic-english mixed,engagement_level:low_engagement,language_to_engagement_level,7
+language:arabic/english mixed,engagement_level:high_engagement,language_to_engagement_level,17
+language:arabic/english mixed,engagement_level:low_engagement,language_to_engagement_level,44
+language:arabic/english mixed,engagement_level:medium_engagement,language_to_engagement_level,36
+language:english,engagement_level:high_engagement,language_to_engagement_level,32
+language:english,engagement_level:low_engagement,language_to_engagement_level,19
+language:english,engagement_level:medium_engagement,language_to_engagement_level,38
+language:mixed,engagement_level:high_engagement,language_to_engagement_level,11
+language:mixed,engagement_level:low_engagement,language_to_engagement_level,3
+language:mixed,engagement_level:medium_engagement,language_to_engagement_level,4
+language:no caption,engagement_level:high_engagement,language_to_engagement_level,2
+language:no caption,engagement_level:low_engagement,language_to_engagement_level,2
+language:no caption,engagement_level:medium_engagement,language_to_engagement_level,7
+language:unknown,engagement_level:high_engagement,language_to_engagement_level,2
+sector:cafes/restaurants,engagement_level:high_engagement,sector_to_engagement_level,79
+sector:cafes/restaurants,engagement_level:low_engagement,sector_to_engagement_level,88
+sector:cafes/restaurants,engagement_level:medium_engagement,sector_to_engagement_level,61
+sector:fashion,engagement_level:high_engagement,sector_to_engagement_level,38
+sector:fashion,engagement_level:low_engagement,sector_to_engagement_level,119
+sector:fashion,engagement_level:medium_engagement,sector_to_engagement_level,101
+sector:gym,engagement_level:high_engagement,sector_to_engagement_level,31
+sector:gym,engagement_level:medium_engagement,sector_to_engagement_level,7
+sector:influencers,engagement_level:high_engagement,sector_to_engagement_level,38
+sector:influencers,engagement_level:low_engagement,sector_to_engagement_level,5
+sector:influencers,engagement_level:medium_engagement,sector_to_engagement_level,37
+sector:supermarkets,engagement_level:high_engagement,sector_to_engagement_level,33
+sector:supermarkets,engagement_level:low_engagement,sector_to_engagement_level,6
+sector:supermarkets,engagement_level:medium_engagement,sector_to_engagement_level,12

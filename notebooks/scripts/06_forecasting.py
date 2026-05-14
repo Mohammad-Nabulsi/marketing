@@ -1,197 +1,331 @@
-
-# 06 Forecasting
-# Forecast engagement with Prophet when available; fallback to Exponential Smoothing.
-
+# 06 Weekly Prophet Forecasting
+# Final version: Vanilla Palestine, weekly, Prophet, additive only, clipped engagement_rate.
 
 import warnings
 import sys
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from IPython.display import display
 
 warnings.filterwarnings("ignore")
-PROJECT_ROOT = Path.cwd().resolve()
-if not (PROJECT_ROOT / "utils" / "utils.py").exists():
-    if (PROJECT_ROOT / "notebooks" / "utils" / "utils.py").exists():
-        PROJECT_ROOT = PROJECT_ROOT / "notebooks"
-    elif (PROJECT_ROOT.parent / "utils" / "utils.py").exists():
-        PROJECT_ROOT = PROJECT_ROOT.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.utils import ensure_project_dirs, load_raw_dataset, clean_dataset, PROCESSED_DIR, REPORTS_DIR, FIGURES_DIR
-from utils.features import engineer_kpis, build_post_feature_sets, aggregate_business_features
+# Project Paths
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
+
+sys.path.insert(0, str(NOTEBOOKS_DIR))
+
+from utils.utils import ensure_project_dirs
 from utils.evaluation import regression_metrics, rank_models
-from utils.visualization import set_plot_style, save_figure
-from pathlib import Path
 
-set_plot_style()
 ensure_project_dirs()
 
-PROJECT_ROOT = Path(__file__).resolve()
+KPI_PATH = PROJECT_ROOT / "data" / "processed" / "vanilla_kpi_dataset.json"
 
-while PROJECT_ROOT.name != "marketing":
-    PROJECT_ROOT = PROJECT_ROOT.parent
+OUTPUTS_DIR = NOTEBOOKS_DIR / "outputs"
+OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
-RAW_DATA_PATH = PROJECT_ROOT / "jsons" / "all_final_appended.json"
+# Load Vanilla Dataset
 
-if not RAW_DATA_PATH.exists():
-    RAW_DATA_PATH = PROJECT_ROOT / "synthetic_generator" / "synthetic_social_media_posts.csv"
+df = pd.read_json(KPI_PATH)
 
-KPI_PATH = PROJECT_ROOT / "data" / "processed" / "kpi_dataset.csv"
+required_columns = [
+    "business_name",
+    "sector",
+    "post_date",
+    "engagement_rate",
+]
+
+missing_columns = [col for col in required_columns if col not in df.columns]
+
+if missing_columns:
+    raise ValueError(f"Missing required columns: {missing_columns}")
+
+df["business_name"] = df["business_name"].astype(str).str.strip()
+df["sector"] = df["sector"].astype(str).str.strip()
+
+df["post_date"] = pd.to_datetime(
+    df["post_date"],
+    unit="ms",
+    errors="coerce"
+)
+
+df["engagement_rate"] = pd.to_numeric(
+    df["engagement_rate"],
+    errors="coerce"
+)
+
+df = df.dropna(
+    subset=[
+        "business_name",
+        "sector",
+        "post_date",
+        "engagement_rate",
+    ]
+)
+
+BUSINESS_NAME = df["business_name"].iloc[0]
+
+print("Business:", BUSINESS_NAME)
+print("Date range:", df["post_date"].min(), "to", df["post_date"].max())
+print("Number of posts:", len(df))
+
+# Clip Extreme Spikes
+
+upper_limit = df["engagement_rate"].quantile(0.99)
+
+df["engagement_rate_clipped"] = np.clip(
+    df["engagement_rate"],
+    None,
+    upper_limit
+)
+
+# Build Weekly Time Series
 
 
-# Load KPI and Build Weekly/Monthly Time Series
-
-if KPI_PATH.exists():
-    df = pd.read_csv(KPI_PATH, parse_dates=["post_date"])
-else:
-    df = engineer_kpis(clean_dataset(load_raw_dataset(RAW_DATA_PATH)))
-df.head()
-
-
-import importlib.util
-
-def build_ts(frame, freq):
+def build_weekly_ts(frame):
     ts = (
-        frame.set_index("post_date")["engagement"]
-        .resample(freq)
+        frame.set_index("post_date")["engagement_rate_clipped"]
+        .resample("W-MON")
         .mean()
         .dropna()
         .reset_index()
-        .rename(columns={"post_date": "ds", "engagement": "y"})
+        .rename(
+            columns={
+                "post_date": "ds",
+                "engagement_rate_clipped": "y",
+            }
+        )
     )
+
     ts["ds"] = pd.to_datetime(ts["ds"])
     return ts
 
-weekly = build_ts(df, "W-MON")
-monthly = build_ts(df, "MS")
+
+weekly_ts = build_weekly_ts(df)
+
+print("Number of weekly points:", len(weekly_ts))
+
+if len(weekly_ts) < 12:
+    raise ValueError(
+        f"Not enough weekly data for forecasting. "
+        f"Available weekly points: {len(weekly_ts)}"
+    )
+
+# Prophet Forecast
+
+from prophet import Prophet
 
 
-# Experiment Grid and Metrics
-
-
-has_prophet = importlib.util.find_spec("prophet") is not None
-if has_prophet:
-    from prophet import Prophet
-else:
-    from statsmodels.tsa.holtwinters import ExponentialSmoothing
-# Forecasting Hyperparameter Experimentation:
-# Different forecasting settings are tested to evaluate which configuration produces better prediction performance.
-# The selected model is based on evaluation metrics such as MAE/RMSE rather than manual guessing.
-cp_vals, modes = [0.01,0.05,0.1,0.5], ["additive","multiplicative"]
-rows, store = [], {}
-for agg_name, ts in {"weekly": weekly, "monthly": monthly}.items():
+def run_prophet_forecast(ts, periods=8):
     ts = ts.sort_values("ds").reset_index(drop=True)
-    if len(ts) < 8:
-        continue
+
     split = int(len(ts) * 0.8)
-    train, test = ts.iloc[:split], ts.iloc[split:]
-    if len(test) == 0:
-        continue
-    if has_prophet:
-        for cp in cp_vals:
-            for mode in modes:
-                m = Prophet(changepoint_prior_scale=cp, seasonality_mode=mode, yearly_seasonality=False, weekly_seasonality=True, daily_seasonality=False)
-                m.fit(train)
-                fut = m.make_future_dataframe(periods=len(test), freq="W-MON" if agg_name=="weekly" else "MS")
-                pred = m.predict(fut)[["ds","yhat"]].tail(len(test))
-                mets = regression_metrics(test["y"], pred["yhat"])
-                rows.append({"model":"prophet","aggregation":agg_name,"changepoint_prior_scale":cp,"seasonality_mode":mode, **mets})
-                store[("prophet",agg_name,cp,mode)] = (train,test,pred)
-    else:
-        model = ExponentialSmoothing(train["y"], trend="add", seasonal=None).fit(optimized=True)
-        pred = pd.DataFrame({"ds": test["ds"].values, "yhat": model.forecast(len(test)).values})
-        mets = regression_metrics(test["y"], pred["yhat"])
-        for cp in cp_vals:
-            for mode in modes:
-                rows.append({"model":"exp_smoothing_fallback","aggregation":agg_name,"changepoint_prior_scale":cp,"seasonality_mode":mode, **mets})
-                store[("exp_smoothing_fallback",agg_name,cp,mode)] = (train,test,pred)
 
-exp_input = pd.DataFrame(rows)
-if exp_input.empty:
-    exp = pd.DataFrame(columns=["model","aggregation","changepoint_prior_scale","seasonality_mode","MAE","RMSE","MAPE","composite_score"])
-    best = None
-    forecast = pd.DataFrame(columns=["ds","y","yhat","level","entity"])
-else:
-    exp = rank_models(exp_input, lower_is_better_cols=["MAE","RMSE","MAPE"])
-    best = exp.iloc[0]
-    train, test, pred = store[(best["model"],best["aggregation"],best["changepoint_prior_scale"],best["seasonality_mode"])]
-    forecast = test.merge(pred, on="ds", how="left")
-    forecast["level"], forecast["entity"] = "overall", "all_businesses"
+    train = ts.iloc[:split]
+    test = ts.iloc[split:]
 
-
-# Sector/Business Extensions and Save
-
-extra = []
-if best is not None:
-    freq = "W-MON" if best["aggregation"] == "weekly" else "MS"
-
-    def build_segment_ts(seg, freq):
-        ts = (
-            seg.set_index("post_date")["engagement"]
-            .resample(freq)
-            .mean()
-            .dropna()
-            .reset_index()
-            .rename(columns={"post_date": "ds", "engagement": "y"})
+    if len(test) < 2:
+        raise ValueError(
+            f"Not enough test weeks. Test weeks: {len(test)}"
         )
-        ts["ds"] = pd.to_datetime(ts["ds"])
-        return ts
 
-    for sector, seg in df.groupby("sector"):
-        ts = build_segment_ts(seg, freq)
-        if len(ts) < 10:
-            continue
-        split = int(len(ts)*0.8)
-        train_s, test_s = ts.iloc[:split], ts.iloc[split:]
-        if len(test_s) < 2:
-            continue
-        if best["model"] == "prophet":
-            from prophet import Prophet
-            m = Prophet(changepoint_prior_scale=float(best["changepoint_prior_scale"]), seasonality_mode=best["seasonality_mode"], yearly_seasonality=False, weekly_seasonality=True, daily_seasonality=False)
-            m.fit(train_s)
-            fut = m.make_future_dataframe(periods=len(test_s), freq=freq)
-            pred_s = m.predict(fut)[["ds","yhat"]].tail(len(test_s))
-        else:
-            from statsmodels.tsa.holtwinters import ExponentialSmoothing
-            fit = ExponentialSmoothing(train_s["y"], trend="add", seasonal=None).fit(optimized=True)
-            pred_s = pd.DataFrame({"ds": test_s["ds"].values, "yhat": fit.forecast(len(test_s)).values})
-        mrg = test_s.merge(pred_s, on="ds", how="left")
-        mrg["level"], mrg["entity"] = "sector", sector
-        extra.append(mrg)
+    experiment_rows = []
+    prediction_store = {}
 
-    for business, seg in df.groupby("business_name"):
-        ts = build_segment_ts(seg, freq)
-        if len(ts) < 12:
-            continue
-        split = int(len(ts)*0.8)
-        train_b, test_b = ts.iloc[:split], ts.iloc[split:]
-        if len(test_b) < 2:
-            continue
-        if best["model"] == "prophet":
-            from prophet import Prophet
-            m = Prophet(changepoint_prior_scale=float(best["changepoint_prior_scale"]), seasonality_mode=best["seasonality_mode"], yearly_seasonality=False, weekly_seasonality=True, daily_seasonality=False)
-            m.fit(train_b)
-            fut = m.make_future_dataframe(periods=len(test_b), freq=freq)
-            pred_b = m.predict(fut)[["ds","yhat"]].tail(len(test_b))
-        else:
-            from statsmodels.tsa.holtwinters import ExponentialSmoothing
-            fit = ExponentialSmoothing(train_b["y"], trend="add", seasonal=None).fit(optimized=True)
-            pred_b = pd.DataFrame({"ds": test_b["ds"].values, "yhat": fit.forecast(len(test_b)).values})
-        mrg = test_b.merge(pred_b, on="ds", how="left")
-        mrg["level"], mrg["entity"] = "business", business
-        extra.append(mrg)
+    # Final recommended settings:
+    # weekly data, additive mode only, no yearly seasonality.
+    cp_vals = [0.01, 0.05, 0.1]
 
-forecast = pd.concat([forecast] + extra, ignore_index=True) if extra else forecast
-forecast.to_csv(PROCESSED_DIR / "forecast.csv", index=False)
-exp.to_csv(PROCESSED_DIR / "forecast_metrics.csv", index=False)
-display(exp.head(10))
-display(forecast.head(20))
-if best is None:
-    print("No valid forecasting experiments were generated from available data.")
-else:
-    print("Insight: selected model balances low error and stable behavior across aggregation levels.")
+    for cp in cp_vals:
+        model = Prophet(
+            changepoint_prior_scale=cp,
+            seasonality_mode="additive",
+            yearly_seasonality=False,
+            weekly_seasonality=True,
+            daily_seasonality=False,
+        )
 
+        model.fit(train)
+
+        future = model.make_future_dataframe(
+            periods=len(test),
+            freq="W-MON"
+        )
+
+        pred = model.predict(future)[["ds", "yhat"]].tail(len(test))
+
+        metrics = regression_metrics(test["y"], pred["yhat"])
+
+        experiment_rows.append(
+            {
+                "business_name": BUSINESS_NAME,
+                "model": "prophet",
+                "aggregation": "weekly",
+                "changepoint_prior_scale": cp,
+                "seasonality_mode": "additive",
+                "yearly_seasonality": False,
+                **metrics,
+            }
+        )
+
+        prediction_store[cp] = (train, test, pred)
+
+    exp_df = pd.DataFrame(experiment_rows)
+
+    ranked = rank_models(
+        exp_df,
+        lower_is_better_cols=["MAE", "RMSE", "MAPE"]
+    )
+
+    best = ranked.iloc[0]
+    best_cp = best["changepoint_prior_scale"]
+
+    train, test, pred = prediction_store[best_cp]
+
+    test_forecast = test.merge(pred, on="ds", how="left")
+    test_forecast["forecast_type"] = "test"
+    test_forecast["yhat_lower"] = np.nan
+    test_forecast["yhat_upper"] = np.nan
+
+    final_model = Prophet(
+        changepoint_prior_scale=float(best_cp),
+        seasonality_mode="additive",
+        yearly_seasonality=False,
+        weekly_seasonality=True,
+        daily_seasonality=False,
+    )
+
+    # Train final model on ALL weekly data
+    final_model.fit(ts)
+
+    future = final_model.make_future_dataframe(
+        periods=periods,
+        freq="W-MON"
+    )
+
+    full_forecast = final_model.predict(future)[
+        ["ds", "yhat", "yhat_lower", "yhat_upper"]
+    ]
+
+    future_forecast = full_forecast[
+        full_forecast["ds"] > ts["ds"].max()
+    ].copy()
+
+    future_forecast["y"] = np.nan
+    future_forecast["forecast_type"] = "future"
+
+    forecast = pd.concat(
+        [
+            test_forecast[
+                ["ds", "y", "yhat", "yhat_lower", "yhat_upper", "forecast_type"]
+            ],
+            future_forecast[
+                ["ds", "y", "yhat", "yhat_lower", "yhat_upper", "forecast_type"]
+            ],
+        ],
+        ignore_index=True,
+    )
+
+    forecast["business_name"] = BUSINESS_NAME
+    forecast["model"] = "prophet"
+    forecast["aggregation"] = "weekly"
+    forecast["target"] = "engagement_rate_clipped"
+    forecast["changepoint_prior_scale"] = best_cp
+    forecast["seasonality_mode"] = "additive"
+    forecast["yearly_seasonality"] = False
+
+    return forecast, ranked
+
+
+forecast, forecast_metrics = run_prophet_forecast(
+    weekly_ts,
+    periods=8
+)
+
+# Save Outputs
+
+forecast.to_csv(
+    OUTPUTS_DIR / "vanilla_weekly_prophet_forecast.csv",
+    index=False
+)
+
+forecast_metrics.to_csv(
+    OUTPUTS_DIR / "vanilla_weekly_prophet_forecast_metrics.csv",
+    index=False
+)
+
+# Plot Forecast
+
+test_part = forecast[forecast["forecast_type"] == "test"]
+future_part = forecast[forecast["forecast_type"] == "future"]
+
+plt.figure(figsize=(14, 6))
+
+plt.plot(
+    test_part["ds"],
+    test_part["y"],
+    marker="o",
+    label="Actual"
+)
+
+plt.plot(
+    test_part["ds"],
+    test_part["yhat"],
+    marker="o",
+    label="Predicted"
+)
+
+plt.plot(
+    future_part["ds"],
+    future_part["yhat"],
+    marker="o",
+    linestyle="--",
+    label="Future Forecast"
+)
+
+plt.fill_between(
+    future_part["ds"],
+    future_part["yhat_lower"],
+    future_part["yhat_upper"],
+    alpha=0.2
+)
+
+plt.title(f"{BUSINESS_NAME} Weekly Engagement Rate Forecast")
+plt.xlabel("Week")
+plt.ylabel("Engagement Rate")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(
+    OUTPUTS_DIR / "vanilla_weekly_prophet_forecast.png"
+)
+
+plt.show()
+
+# Final Summary
+
+print("Vanilla Weekly Prophet Forecasting completed successfully.")
+print()
+print("Business:")
+print(BUSINESS_NAME)
+print()
+print("Input file:")
+print(KPI_PATH)
+print()
+print("Saved outputs to:")
+print(OUTPUTS_DIR)
+print()
+print("Generated files:")
+print("- vanilla_weekly_prophet_forecast.csv")
+print("- vanilla_weekly_prophet_forecast_metrics.csv")
+print("- vanilla_weekly_prophet_forecast.png")
+print()
+print("Forecast target:")
+print("- engagement_rate_clipped")
+print()
+print("Forecast horizon:")
+print("- next 8 weeks")
