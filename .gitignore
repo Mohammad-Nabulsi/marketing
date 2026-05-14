@@ -33,3 +33,4 @@ backend/storage/reports/**
 !backend/storage/outputs/.gitkeep
 !backend/storage/reports/.gitkeep
 
+bert-venv/
