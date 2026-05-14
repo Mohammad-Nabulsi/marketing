@@ -41,3 +41,9 @@ bert-venv/
 venv-bert/
 .local_models/
 notebooks/.local_models/
+venv-bert/
+path/to/local-model/
+*.bin
+*.pt
+*.pth
+*.safetensors
