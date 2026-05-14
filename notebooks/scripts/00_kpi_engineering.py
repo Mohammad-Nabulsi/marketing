@@ -69,19 +69,8 @@ display(clean_df.head())
 # Engineer KPIs and Validate Division Safety
 
 df = engineer_kpis(clean_df)
-# Raw JSON stores epoch timestamps in milliseconds; parse numerics with unit="ms".
-post_date_num = pd.to_numeric(df["post_date"], errors="coerce")
-df["post_date"] = pd.to_datetime(
-    post_date_num,
-    unit="ms",
-    errors="coerce"
-)
-mask_non_numeric = post_date_num.isna()
-if mask_non_numeric.any():
-    df.loc[mask_non_numeric, "post_date"] = pd.to_datetime(
-        df.loc[mask_non_numeric, "post_date"],
-        errors="coerce"
-    )
+# clean_dataset already normalizes post_date robustly; keep as datetime here.
+df["post_date"] = pd.to_datetime(df["post_date"], errors="coerce")
 rate_cols = ["engagement_rate", "like_rate", "comment_rate", "view_rate", "view_engagement_rate"]
 invalid = {c: int(np.isinf(df[c]).sum() + df[c].isna().sum()) for c in rate_cols}
 print("Invalid rate values:", invalid)
