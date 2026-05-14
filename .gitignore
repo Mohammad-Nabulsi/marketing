@@ -37,3 +37,7 @@ bert-venv/
 bert-venv/
 .local_models/
 bert-venv/
+bert-venv/
+venv-bert/
+.local_models/
+notebooks/.local_models/
