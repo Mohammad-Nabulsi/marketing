@@ -224,285 +224,606 @@ def summarize_patterns(df_part, sector_name, anomaly_type):
     }
 
 
-# =========================
-# 5) Sector-Based Anomaly Detection
-# =========================
+def ensure_anomaly_type(df):
+    result = df.copy()
 
-all_anomalies = []
-top_positive_rows = []
-top_negative_rows = []
-experiment_rows = []
-pattern_rows = []
+    if "anomaly_type" in result.columns:
+        return result
 
-sectors = df["sector"].dropna().unique()
+    if "anomaly_label" in result.columns:
+        engagement_reference = result["engagement_rate"].median()
 
-for sector in sectors:
-    sector_df = df[df["sector"] == sector].copy()
+        result["anomaly_type"] = np.where(
+            (result["anomaly_label"] == -1)
+            & (result["engagement_rate"] >= engagement_reference),
+            "positive_anomaly",
+            np.where(
+                result["anomaly_label"] == -1,
+                "negative_anomaly",
+                "normal"
+            )
+        )
+    else:
+        result["anomaly_type"] = "normal"
 
-    if len(sector_df) < 10:
-        print(f"Skipping sector {sector}: not enough data.")
-        continue
+    return result
 
-    X_raw = sector_df[features].fillna(0)
-    X = StandardScaler().fit_transform(X_raw)
 
-    method_outputs = {}
+def add_behavior_features_from_available_columns(df):
+    result = df.copy()
 
-    for threshold in [2, 2.5, 3]:
-        y = run_zscore(X, threshold)
-        method_key = f"zscore_{threshold}"
+    if "posting_frequency" not in result.columns and "business_name" in result.columns:
+        result["posting_frequency"] = result.groupby("business_name")["business_name"].transform("size")
 
-        method_outputs[method_key] = {
-            "method": "zscore",
-            "setting": f"threshold={threshold}",
-            "y": y,
-        }
+    direct_mappings = {
+        "avg_caption_length": "caption_length",
+        "avg_hashtags_count": "hashtags_count",
+        "avg_emoji_count": "emoji_count",
+        "avg_engagement_rate": "engagement_rate",
+        "avg_view_rate": "view_rate",
+        "avg_comment_rate": "comment_rate",
+    }
 
-    for contamination in [0.03, 0.05, 0.10]:
-        y = run_iforest(X, contamination)
-        method_key = f"iforest_{contamination}"
+    for behavior_col, source_col in direct_mappings.items():
+        if behavior_col not in result.columns and source_col in result.columns:
+            result[behavior_col] = pd.to_numeric(result[source_col], errors="coerce")
 
-        method_outputs[method_key] = {
-            "method": "isolation_forest",
-            "setting": f"contamination={contamination}",
-            "y": y,
-        }
+    boolean_mappings = {
+        "percentage_reels": "is_reel",
+        "percentage_promo_posts": "promo_post",
+        "percentage_CTA_posts": "CTA_present",
+        "percentage_location_posts": "mentions_location",
+        "percentage_religious_theme": "religious_theme",
+        "percentage_patriotic_theme": "patriotic_theme",
+        "percentage_arabic_dialect_style": "arabic_dialect_style",
+    }
 
-    for n_neighbors in [10, 20, 35]:
-        y = run_lof(X, n_neighbors, contamination=0.05)
-        method_key = f"lof_{n_neighbors}"
+    for behavior_col, source_col in boolean_mappings.items():
+        if behavior_col not in result.columns and source_col in result.columns:
+            result[behavior_col] = result[source_col].fillna(False).astype(bool).astype(int)
 
-        method_outputs[method_key] = {
-            "method": "lof",
-            "setting": f"n_neighbors={n_neighbors}",
-            "y": y,
-        }
-
-    for method_key, info in method_outputs.items():
-        anomaly_count, anomaly_ratio, balance_score, interpretability, final_score = evaluate_method(
-            info["y"],
-            info["method"]
+    if "percentage_reels" not in result.columns and "post_type" in result.columns:
+        result["percentage_reels"] = (
+            result["post_type"].astype(str).str.lower().eq("reel").astype(int)
         )
 
-        experiment_rows.append({
-            "sector": sector,
-            "method_key": method_key,
-            "method": info["method"],
-            "setting": info["setting"],
-            "total_posts": len(sector_df),
-            "anomaly_count": anomaly_count,
-            "anomaly_ratio": anomaly_ratio,
-            "balance_score": balance_score,
-            "interpretability": interpretability,
-            "final_score": final_score,
+    if "percentage_images" not in result.columns and "post_type" in result.columns:
+        result["percentage_images"] = (
+            result["post_type"].astype(str).str.lower().eq("image").astype(int)
+        )
+
+    if "percentage_carousels" not in result.columns and "post_type" in result.columns:
+        result["percentage_carousels"] = (
+            result["post_type"].astype(str).str.lower().eq("carousel").astype(int)
+        )
+
+    return result
+
+
+def generate_anomaly_behavior_recommendations(df, output_dir, top_n=5):
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("df must be a pandas DataFrame.")
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    df = ensure_anomaly_type(df.copy())
+    df = add_behavior_features_from_available_columns(df)
+
+    behavior_cols = [
+        "posting_frequency",
+        "avg_caption_length",
+        "avg_hashtags_count",
+        "avg_emoji_count",
+        "percentage_reels",
+        "percentage_images",
+        "percentage_carousels",
+        "percentage_promo_posts",
+        "percentage_CTA_posts",
+        "percentage_location_posts",
+        "percentage_religious_theme",
+        "percentage_patriotic_theme",
+        "percentage_arabic_dialect_style",
+        "avg_engagement_rate",
+        "avg_view_rate",
+        "avg_comment_rate",
+    ]
+
+    friendly_names = {
+        "posting_frequency": "post more consistently",
+        "avg_caption_length": "adjust caption length",
+        "avg_hashtags_count": "use hashtags more strategically",
+        "avg_emoji_count": "use emojis more effectively",
+        "percentage_reels": "use more reels",
+        "percentage_images": "use more image posts",
+        "percentage_carousels": "use more carousel posts",
+        "percentage_promo_posts": "balance promotional content",
+        "percentage_CTA_posts": "add stronger call-to-actions",
+        "percentage_location_posts": "mention locations more often",
+        "percentage_religious_theme": "use religious seasonal themes carefully",
+        "percentage_patriotic_theme": "use patriotic themes when relevant",
+        "percentage_arabic_dialect_style": "use Arabic dialect style when appropriate",
+        "avg_engagement_rate": "improve engagement rate",
+        "avg_view_rate": "improve video/view performance",
+        "avg_comment_rate": "encourage more comments",
+    }
+
+    available_behavior_cols = [
+        col for col in behavior_cols
+        if col in df.columns and pd.api.types.is_numeric_dtype(df[col])
+    ]
+
+    profile_summary_path = output_dir / "anomaly_behavior_profile_summary.csv"
+    recommendations_path = output_dir / "anomaly_recommendations.csv"
+    chart_path = output_dir / "anomaly_recommendation_drivers.png"
+
+    profile_columns = [
+        "behavior_feature",
+        "positive_mean",
+        "negative_mean",
+        "normal_mean",
+        "positive_diff",
+        "negative_diff",
+        "positive_relative_percent",
+        "negative_relative_percent",
+    ]
+    recommendation_columns = [
+        "recommendation_type",
+        "behavior_feature",
+        "friendly_action",
+        "direction",
+        "relative_difference_percent",
+        "recommendation_message",
+    ]
+
+    if not available_behavior_cols:
+        warning_message = "No available behavior columns found for anomaly recommendations."
+        print(f"Warning: {warning_message}")
+
+        profile_summary_df = pd.DataFrame(columns=profile_columns)
+        recommendations_df = pd.DataFrame(columns=recommendation_columns)
+        recommendations_df.attrs["warning_message"] = warning_message
+
+        profile_summary_df.to_csv(profile_summary_path, index=False)
+        recommendations_df.to_csv(recommendations_path, index=False)
+
+        return {
+            "profile_summary_df": profile_summary_df,
+            "recommendations_df": recommendations_df,
+            "profile_summary_path": profile_summary_path,
+            "recommendations_path": recommendations_path,
+            "chart_path": None,
+        }
+
+    positive_df = df[df["anomaly_type"] == "positive_anomaly"]
+    negative_df = df[df["anomaly_type"] == "negative_anomaly"]
+    normal_df = df[df["anomaly_type"] == "normal"]
+
+    positive_means = positive_df[available_behavior_cols].mean()
+    negative_means = negative_df[available_behavior_cols].mean()
+    normal_means = normal_df[available_behavior_cols].mean()
+
+    positive_diff = positive_means - normal_means
+    negative_diff = negative_means - normal_means
+
+    positive_relative = (
+        (positive_means - normal_means) / (normal_means + 1e-6)
+    ) * 100
+    negative_relative = (
+        (negative_means - normal_means) / (normal_means + 1e-6)
+    ) * 100
+
+    profile_summary_df = pd.DataFrame({
+        "behavior_feature": available_behavior_cols,
+        "positive_mean": positive_means.reindex(available_behavior_cols).values,
+        "negative_mean": negative_means.reindex(available_behavior_cols).values,
+        "normal_mean": normal_means.reindex(available_behavior_cols).values,
+        "positive_diff": positive_diff.reindex(available_behavior_cols).values,
+        "negative_diff": negative_diff.reindex(available_behavior_cols).values,
+        "positive_relative_percent": positive_relative.reindex(available_behavior_cols).values,
+        "negative_relative_percent": negative_relative.reindex(available_behavior_cols).values,
+    })
+
+    warning_messages = []
+    if positive_df.empty:
+        warning_messages.append("No positive anomalies found.")
+    if negative_df.empty:
+        warning_messages.append("No negative anomalies found.")
+    if normal_df.empty:
+        warning_messages.append("No normal businesses/posts found for baseline comparison.")
+
+    if warning_messages:
+        warning_message = " ".join(warning_messages)
+        print(f"Warning: {warning_message}")
+
+        recommendations_df = pd.DataFrame(columns=recommendation_columns)
+        recommendations_df.attrs["warning_message"] = warning_message
+
+        profile_summary_df.to_csv(profile_summary_path, index=False)
+        recommendations_df.to_csv(recommendations_path, index=False)
+
+        return {
+            "profile_summary_df": profile_summary_df,
+            "recommendations_df": recommendations_df,
+            "profile_summary_path": profile_summary_path,
+            "recommendations_path": recommendations_path,
+            "chart_path": None,
+        }
+
+    recommendation_rows = []
+
+    top_positive = (
+        positive_relative.dropna()
+        .sort_values(ascending=False)
+        .head(top_n)
+    )
+
+    for feature, relative_value in top_positive.items():
+        if relative_value <= 0:
+            continue
+
+        friendly_action = friendly_names.get(feature, feature.replace("_", " "))
+        recommendation_rows.append({
+            "recommendation_type": "do_more",
+            "behavior_feature": feature,
+            "friendly_action": friendly_action,
+            "direction": "higher_than_normal",
+            "relative_difference_percent": relative_value,
+            "recommendation_message": (
+                f"Do more: {friendly_action}. "
+                f"Positive anomalies are higher than normal by about {relative_value:.1f}%."
+            ),
         })
 
-    sector_experiments = pd.DataFrame(
-        [row for row in experiment_rows if row["sector"] == sector]
+    top_negative = (
+        negative_relative.dropna()
+        .sort_values(ascending=True)
+        .head(top_n)
     )
 
-    best_row = sector_experiments.sort_values(
-        "final_score",
-        ascending=False
-    ).iloc[0]
+    for feature, relative_value in top_negative.items():
+        if relative_value >= 0:
+            continue
 
-    best_key = best_row["method_key"]
-    best_y = method_outputs[best_key]["y"]
+        friendly_action = friendly_names.get(feature, feature.replace("_", " "))
+        recommendation_rows.append({
+            "recommendation_type": "avoid_or_reduce",
+            "behavior_feature": feature,
+            "friendly_action": friendly_action,
+            "direction": "lower_than_normal",
+            "relative_difference_percent": relative_value,
+            "recommendation_message": (
+                f"Avoid/reduce: weak behavior in {feature}. "
+                f"Negative anomalies are lower than normal by about {abs(relative_value):.1f}%."
+            ),
+        })
 
-    sector_result = classify_anomaly_type(sector_df, best_y)
-    sector_result["best_method"] = best_row["method"]
-    sector_result["best_setting"] = best_row["setting"]
-
-    sector_anomalies = sector_result[
-        sector_result["anomaly_label"] == -1
-    ].copy()
-
-    sector_anomalies = add_anomaly_strength(sector_anomalies)
-
-    all_anomalies.append(sector_anomalies)
-
-    positive = (
-        sector_anomalies[
-            sector_anomalies["anomaly_type"] == "positive_anomaly"
-        ]
-        .sort_values("engagement_rate", ascending=False)
-        .head(5)
+    recommendations_df = pd.DataFrame(
+        recommendation_rows,
+        columns=recommendation_columns,
     )
 
-    negative = (
-        sector_anomalies[
-            sector_anomalies["anomaly_type"] == "negative_anomaly"
-        ]
-        .sort_values("engagement_rate", ascending=True)
-        .head(5)
+    profile_summary_df.to_csv(profile_summary_path, index=False)
+    recommendations_df.to_csv(recommendations_path, index=False)
+
+    if recommendations_df.empty:
+        chart_path = None
+    else:
+        chart_df = recommendations_df.copy()
+        chart_df["plot_value"] = chart_df["relative_difference_percent"]
+        chart_df["label"] = chart_df["friendly_action"]
+        chart_df = chart_df.sort_values("plot_value")
+
+        colors = np.where(
+            chart_df["recommendation_type"] == "do_more",
+            "tab:green",
+            "tab:red"
+        )
+
+        fig, ax = plt.subplots(figsize=(12, max(5, 0.45 * len(chart_df))))
+        ax.barh(chart_df["label"], chart_df["plot_value"], color=colors)
+        ax.axvline(0, color="black", linewidth=1)
+        ax.set_title("Top Anomaly Recommendation Drivers", fontsize=14)
+        ax.set_xlabel("Relative Difference vs Normal (%)", fontsize=11)
+        ax.set_ylabel("Behavior Driver", fontsize=11)
+        ax.grid(axis="x", alpha=0.25)
+        plt.tight_layout()
+        fig.savefig(chart_path, dpi=300, bbox_inches="tight")
+        plt.close(fig)
+
+    return {
+        "profile_summary_df": profile_summary_df,
+        "recommendations_df": recommendations_df,
+        "profile_summary_path": profile_summary_path,
+        "recommendations_path": recommendations_path,
+        "chart_path": chart_path,
+    }
+
+
+def run_sector_based_anomaly_detection():
+    all_anomalies = []
+    all_sector_results = []
+    top_positive_rows = []
+    top_negative_rows = []
+    experiment_rows = []
+    pattern_rows = []
+
+    sectors = df["sector"].dropna().unique()
+
+    for sector in sectors:
+        sector_df = df[df["sector"] == sector].copy()
+
+        if len(sector_df) < 10:
+            print(f"Skipping sector {sector}: not enough data.")
+            continue
+
+        X_raw = sector_df[features].fillna(0)
+        X = StandardScaler().fit_transform(X_raw)
+
+        method_outputs = {}
+
+        for threshold in [2, 2.5, 3]:
+            y = run_zscore(X, threshold)
+            method_key = f"zscore_{threshold}"
+
+            method_outputs[method_key] = {
+                "method": "zscore",
+                "setting": f"threshold={threshold}",
+                "y": y,
+            }
+
+        for contamination in [0.03, 0.05, 0.10]:
+            y = run_iforest(X, contamination)
+            method_key = f"iforest_{contamination}"
+
+            method_outputs[method_key] = {
+                "method": "isolation_forest",
+                "setting": f"contamination={contamination}",
+                "y": y,
+            }
+
+        for n_neighbors in [10, 20, 35]:
+            y = run_lof(X, n_neighbors, contamination=0.05)
+            method_key = f"lof_{n_neighbors}"
+
+            method_outputs[method_key] = {
+                "method": "lof",
+                "setting": f"n_neighbors={n_neighbors}",
+                "y": y,
+            }
+
+        for method_key, info in method_outputs.items():
+            anomaly_count, anomaly_ratio, balance_score, interpretability, final_score = evaluate_method(
+                info["y"],
+                info["method"]
+            )
+
+            experiment_rows.append({
+                "sector": sector,
+                "method_key": method_key,
+                "method": info["method"],
+                "setting": info["setting"],
+                "total_posts": len(sector_df),
+                "anomaly_count": anomaly_count,
+                "anomaly_ratio": anomaly_ratio,
+                "balance_score": balance_score,
+                "interpretability": interpretability,
+                "final_score": final_score,
+            })
+
+        fixed_method_key = "iforest_0.05"
+        fixed_method_info = method_outputs[fixed_method_key]
+        best_y = fixed_method_info["y"]
+
+        sector_result = classify_anomaly_type(sector_df, best_y)
+        sector_result["best_method"] = fixed_method_info["method"]
+        sector_result["best_setting"] = fixed_method_info["setting"]
+        sector_result["anomaly_detection_scope"] = "sector_based"
+
+        all_sector_results.append(sector_result)
+
+        sector_anomalies = sector_result[
+            sector_result["anomaly_label"] == -1
+        ].copy()
+
+        sector_anomalies = add_anomaly_strength(sector_anomalies)
+
+        all_anomalies.append(sector_anomalies)
+
+        positive = (
+            sector_anomalies[
+                sector_anomalies["anomaly_type"] == "positive_anomaly"
+            ]
+            .sort_values("engagement_rate", ascending=False)
+            .head(5)
+        )
+
+        negative = (
+            sector_anomalies[
+                sector_anomalies["anomaly_type"] == "negative_anomaly"
+            ]
+            .sort_values("engagement_rate", ascending=True)
+            .head(5)
+        )
+
+        top_positive_rows.append(positive)
+        top_negative_rows.append(negative)
+
+        pattern_rows.append(
+            summarize_patterns(positive, sector, "positive_anomaly")
+        )
+
+        pattern_rows.append(
+            summarize_patterns(negative, sector, "negative_anomaly")
+        )
+
+
+    # =========================
+    # 6) Combine Outputs
+    # =========================
+    anomaly_experiments = pd.DataFrame(experiment_rows)
+
+    all_anomalies_df = (
+        pd.concat(all_anomalies, ignore_index=True)
+        if all_anomalies
+        else pd.DataFrame()
     )
 
-    top_positive_rows.append(positive)
-    top_negative_rows.append(negative)
-
-    pattern_rows.append(
-        summarize_patterns(positive, sector, "positive_anomaly")
+    all_anomaly_results_df = (
+        pd.concat(all_sector_results, ignore_index=True)
+        if all_sector_results
+        else pd.DataFrame()
     )
 
-    pattern_rows.append(
-        summarize_patterns(negative, sector, "negative_anomaly")
+    top_positive_anomalies = (
+        pd.concat(top_positive_rows, ignore_index=True)
+        if top_positive_rows
+        else pd.DataFrame()
     )
 
-
-# =========================
-# 6) Combine Outputs
-# =========================
-
-anomaly_experiments = pd.DataFrame(experiment_rows)
-
-all_anomalies_df = (
-    pd.concat(all_anomalies, ignore_index=True)
-    if all_anomalies
-    else pd.DataFrame()
-)
-
-top_positive_anomalies = (
-    pd.concat(top_positive_rows, ignore_index=True)
-    if top_positive_rows
-    else pd.DataFrame()
-)
-
-top_negative_anomalies = (
-    pd.concat(top_negative_rows, ignore_index=True)
-    if top_negative_rows
-    else pd.DataFrame()
-)
-
-sector_pattern_summary = pd.DataFrame(pattern_rows)
-
-top_anomalies_for_client = pd.concat(
-    [top_positive_anomalies, top_negative_anomalies],
-    ignore_index=True
-)
-
-client_columns = [
-    "sector",
-    "business_name",
-    "post_date",
-    "post_type",
-    "engagement_rate",
-    "views_count",
-    "likes_count",
-    "comments_count",
-    "caption_length",
-    "hashtags_count",
-    "emoji_count",
-    "promo_post",
-    "posting_hour",
-    "anomaly_type",
-    "best_method",
-    "best_setting",
-]
-
-top_anomalies_for_client = top_anomalies_for_client[
-    [col for col in client_columns if col in top_anomalies_for_client.columns]
-]
-
-# Save Outputs
-
-
-all_anomalies_df.to_csv(
-    OUTPUTS_DIR / "sector_based_anomalies.csv",
-    index=False
-)
-
-top_positive_anomalies.to_csv(
-    OUTPUTS_DIR / "top5_positive_anomalies_by_sector.csv",
-    index=False
-)
-
-top_negative_anomalies.to_csv(
-    OUTPUTS_DIR / "top5_negative_anomalies_by_sector.csv",
-    index=False
-)
-
-top_anomalies_for_client.to_csv(
-    OUTPUTS_DIR / "top_anomalies_for_client.csv",
-    index=False
-)
-
-sector_pattern_summary.to_csv(
-    OUTPUTS_DIR / "sector_anomaly_pattern_summary.csv",
-    index=False
-)
-
-anomaly_experiments.to_csv(
-    OUTPUTS_DIR / "sector_anomaly_experiments.csv",
-    index=False
-)
-
-# Visualizations
-
-comparison_df = anomaly_experiments.copy()
-
-pivot_scores = comparison_df.pivot_table(
-    index="sector",
-    columns="method",
-    values="final_score",
-    aggfunc="mean"
-)
-
-pivot_scores.plot(
-    kind="bar",
-    figsize=(14, 6),
-    width=0.8
-)
-
-plt.title("Anomaly Detection Algorithm Comparison by Sector")
-plt.xlabel("Sector")
-plt.ylabel("Final Score")
-plt.xticks(rotation=35, ha="right")
-plt.legend(title="Algorithm")
-plt.tight_layout()
-
-plt.savefig(
-    OUTPUTS_DIR / "algorithm_comparison_by_sector.png"
-)
-
-plt.show()
-
-
-if not all_anomalies_df.empty:
-    anomaly_counts = (
-        all_anomalies_df.groupby(["sector", "anomaly_type"])
-        .size()
-        .reset_index(name="count")
+    top_negative_anomalies = (
+        pd.concat(top_negative_rows, ignore_index=True)
+        if top_negative_rows
+        else pd.DataFrame()
     )
 
-    pivot_counts = anomaly_counts.pivot(
+    sector_pattern_summary = pd.DataFrame(pattern_rows)
+
+    top_anomalies_for_client = pd.concat(
+        [top_positive_anomalies, top_negative_anomalies],
+        ignore_index=True
+    )
+
+    client_columns = [
+        "sector",
+        "business_name",
+        "post_date",
+        "post_type",
+        "engagement_rate",
+        "views_count",
+        "likes_count",
+        "comments_count",
+        "caption_length",
+        "hashtags_count",
+        "emoji_count",
+        "promo_post",
+        "posting_hour",
+        "anomaly_type",
+        "best_method",
+        "best_setting",
+        "anomaly_detection_scope",
+    ]
+
+    top_anomalies_for_client = top_anomalies_for_client[
+        [col for col in client_columns if col in top_anomalies_for_client.columns]
+    ]
+
+    # Save Outputs
+    all_anomalies_df.to_csv(
+        OUTPUTS_DIR / "sector_based_anomalies.csv",
+        index=False
+    )
+
+    top_positive_anomalies.to_csv(
+        OUTPUTS_DIR / "top5_positive_anomalies_by_sector.csv",
+        index=False
+    )
+
+    top_negative_anomalies.to_csv(
+        OUTPUTS_DIR / "top5_negative_anomalies_by_sector.csv",
+        index=False
+    )
+
+    top_anomalies_for_client.to_csv(
+        OUTPUTS_DIR / "top_anomalies_for_client.csv",
+        index=False
+    )
+
+    sector_pattern_summary.to_csv(
+        OUTPUTS_DIR / "sector_anomaly_pattern_summary.csv",
+        index=False
+    )
+
+    anomaly_experiments.to_csv(
+        OUTPUTS_DIR / "sector_anomaly_experiments.csv",
+        index=False
+    )
+
+    anomaly_recommendation_outputs = generate_anomaly_behavior_recommendations(
+        all_anomaly_results_df,
+        OUTPUTS_DIR,
+    )
+
+    # Visualizations
+    comparison_df = anomaly_experiments.copy()
+
+    pivot_scores = comparison_df.pivot_table(
         index="sector",
-        columns="anomaly_type",
-        values="count"
-    ).fillna(0)
+        columns="method",
+        values="final_score",
+        aggfunc="mean"
+    )
 
-    pivot_counts.plot(kind="bar", figsize=(12, 6))
-    plt.title("Positive vs Negative Anomalies by Sector")
+    pivot_scores.plot(
+        kind="bar",
+        figsize=(14, 6),
+        width=0.8
+    )
+
+    plt.title("Anomaly Detection Algorithm Comparison by Sector")
     plt.xlabel("Sector")
-    plt.ylabel("Number of Anomalies")
-    plt.xticks(rotation=45, ha="right")
+    plt.ylabel("Final Score")
+    plt.xticks(rotation=35, ha="right")
+    plt.legend(title="Algorithm")
     plt.tight_layout()
-    plt.savefig(OUTPUTS_DIR / "positive_negative_anomalies_by_sector.png")
+
+    plt.savefig(
+        OUTPUTS_DIR / "algorithm_comparison_by_sector.png"
+    )
+
     plt.show()
 
-# Final Summary
+    if not all_anomalies_df.empty:
+        anomaly_counts = (
+            all_anomalies_df.groupby(["sector", "anomaly_type"])
+            .size()
+            .reset_index(name="count")
+        )
+
+        pivot_counts = anomaly_counts.pivot(
+            index="sector",
+            columns="anomaly_type",
+            values="count"
+        ).fillna(0)
+
+        pivot_counts.plot(kind="bar", figsize=(12, 6))
+        plt.title("Positive vs Negative Anomalies by Sector")
+        plt.xlabel("Sector")
+        plt.ylabel("Number of Anomalies")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+        plt.savefig(OUTPUTS_DIR / "positive_negative_anomalies_by_sector.png")
+        plt.show()
+
+    # Final Summary
+    print("Sector-Based Explainable Anomaly Detection completed successfully.")
+    print()
+    print("Saved outputs to:")
+    print(OUTPUTS_DIR)
+    print()
+    print("Generated files:")
+    print("- sector_based_anomalies.csv")
+    print("- top5_positive_anomalies_by_sector.csv")
+    print("- top5_negative_anomalies_by_sector.csv")
+    print("- top_anomalies_for_client.csv")
+    print("- sector_anomaly_pattern_summary.csv")
+    print("- sector_anomaly_experiments.csv")
+    print("- anomaly_behavior_profile_summary.csv")
+    print("- anomaly_recommendations.csv")
+    print("- anomaly_recommendation_drivers.png (when recommendations exist)")
+    print("- algorithm_comparison_by_sector.png")
+    print("- positive_negative_anomalies_by_sector.png")
 
 
-print("Sector-Based Explainable Anomaly Detection completed successfully.")
-print()
-print("Saved outputs to:")
-print(OUTPUTS_DIR)
-print()
-print("Generated files:")
-print("- sector_based_anomalies.csv")
-print("- top5_positive_anomalies_by_sector.csv")
-print("- top5_negative_anomalies_by_sector.csv")
-print("- top_anomalies_for_client.csv")
-print("- sector_anomaly_pattern_summary.csv")
-print("- sector_anomaly_experiments.csv")
-print("- best_anomaly_algorithm_by_sector.png")
-print("- positive_negative_anomalies_by_sector.png")
+if __name__ == "__main__":
+    run_sector_based_anomaly_detection()

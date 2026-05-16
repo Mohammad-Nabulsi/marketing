@@ -1,0 +1,11 @@
+recommendation_type,behavior_feature,friendly_action,direction,relative_difference_percent,recommendation_message
+do_more,avg_comment_rate,encourage more comments,higher_than_normal,1014.7305750961518,Do more: encourage more comments. Positive anomalies are higher than normal by about 1014.7%.
+do_more,avg_engagement_rate,improve engagement rate,higher_than_normal,1012.7593540822065,Do more: improve engagement rate. Positive anomalies are higher than normal by about 1012.8%.
+do_more,avg_view_rate,improve video/view performance,higher_than_normal,499.28180047438866,Do more: improve video/view performance. Positive anomalies are higher than normal by about 499.3%.
+do_more,avg_hashtags_count,use hashtags more strategically,higher_than_normal,234.35547771380573,Do more: use hashtags more strategically. Positive anomalies are higher than normal by about 234.4%.
+do_more,percentage_patriotic_theme,use patriotic themes when relevant,higher_than_normal,163.00093525116387,Do more: use patriotic themes when relevant. Positive anomalies are higher than normal by about 163.0%.
+avoid_or_reduce,avg_view_rate,improve video/view performance,lower_than_normal,-99.99997503896724,Avoid/reduce: weak behavior in avg_view_rate. Negative anomalies are lower than normal by about 100.0%.
+avoid_or_reduce,avg_hashtags_count,use hashtags more strategically,lower_than_normal,-99.99989182620396,Avoid/reduce: weak behavior in avg_hashtags_count. Negative anomalies are lower than normal by about 100.0%.
+avoid_or_reduce,percentage_reels,use more reels,lower_than_normal,-99.99988015428622,Avoid/reduce: weak behavior in percentage_reels. Negative anomalies are lower than normal by about 100.0%.
+avoid_or_reduce,percentage_religious_theme,use religious seasonal themes carefully,lower_than_normal,-99.99942407739097,Avoid/reduce: weak behavior in percentage_religious_theme. Negative anomalies are lower than normal by about 100.0%.
+avoid_or_reduce,percentage_patriotic_theme,use patriotic themes when relevant,lower_than_normal,-99.99927674941699,Avoid/reduce: weak behavior in percentage_patriotic_theme. Negative anomalies are lower than normal by about 100.0%.

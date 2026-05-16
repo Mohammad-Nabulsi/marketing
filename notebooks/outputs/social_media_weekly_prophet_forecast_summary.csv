@@ -1,0 +1,2 @@
+business_name,target_column,date_start,date_end,input_rows,weekly_points,forecast_horizon_weeks,best_model,best_model_key,best_MAE,best_RMSE,best_MAPE
+All Platforms,Engagement_Rate,2024-01-01 01:42:00,2025-12-31 21:56:00,5000,106,8,prophet,prophet_cp_0.1_additive_yearly_True,2.9357982964134948,4.117543013773343,29.807520890916468
