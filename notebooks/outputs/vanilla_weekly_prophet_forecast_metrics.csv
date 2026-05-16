@@ -1,0 +1,4 @@
+business_name,model,aggregation,changepoint_prior_scale,seasonality_mode,yearly_seasonality,MAE,RMSE,MAPE,composite_score
+All Platforms,prophet,weekly,0.01,additive,False,3.110553415097964,4.40498568123732,30.65158608743761,2.0
+All Platforms,prophet,weekly,0.1,additive,False,3.1121458128990316,4.4157705968425605,30.51670986453715,1.0108561824652698
+All Platforms,prophet,weekly,0.05,additive,False,3.1121620561349888,4.415836147310774,30.5159935883037,1.0

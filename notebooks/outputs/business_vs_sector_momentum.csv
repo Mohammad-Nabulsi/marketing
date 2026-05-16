@@ -1,0 +1,66 @@
+sector,business_name,week,latest_rolling_engagement_rate,latest_business_growth,business_momentum_class,posts_count,latest_sector_engagement_rate,sector_momentum_class,performance_vs_sector
+Cafes/Restaurants,Abu shukri restaurant-مطعم حمص ابو شكري,2022-09-12/2022-09-18,0.02471264367816083,-0.06318082788671064,stable,1,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Farouj Abu Alabd,2026-05-04/2026-05-10,0.002676666666666667,1.5172413793103448,inconsistent,1,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Jericho Resort Village - قرية أريحا السياحية,2026-03-30/2026-04-05,0.0001803652968036347,-0.8252212389380651,inconsistent,2,0.0017770840385614968,improving,below_sector_average
+Cafes/Restaurants,KFC Palestine,2025-11-17/2025-11-23,0.0136672231496939,-0.025783419278063047,inconsistent,1,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Mazaj Oriental - مزاج الشرقي,2023-09-25/2023-10-01,0.010635964912280665,0.3687676387582346,inconsistent,1,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Noor Restaurant and Cafe,2026-05-04/2026-05-10,0.0007685353535353454,-0.4996876541180342,inconsistent,3,0.0017770840385614968,improving,below_sector_average
+Cafes/Restaurants,Orgada Burgers,2026-04-27/2026-05-03,0.0001228698023176516,-0.2230603448274363,inconsistent,4,0.0017770840385614968,improving,below_sector_average
+Cafes/Restaurants,Pardo Cafe,2026-05-04/2026-05-10,0.0074662162162161495,1.2100000000000315,improving,2,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,REXOS Café & Restaurant,2026-05-04/2026-05-10,0.000505291005290963,-0.9670291731399993,inconsistent,3,0.0017770840385614968,improving,below_sector_average
+Cafes/Restaurants,Robian Restaurant,2025-07-28/2025-08-03,0.011128205128205068,-0.338414634146343,inconsistent,1,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Shawerma w Mashawi Al Helou,2026-05-04/2026-05-10,0.008742798353909436,-0.07469512195121675,inconsistent,2,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Vanilla Palestine,2026-05-04/2026-05-10,0.004005595523581083,-0.3808611849014687,inconsistent,2,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Vienna Restaurant & Cafe,2023-03-13/2023-03-19,0.00972468624745381,-0.03267973856209383,stable,3,0.0017770840385614968,improving,above_sector_average
+Cafes/Restaurants,Wakeup coffee,2026-05-04/2026-05-10,0.00013981481481479798,-0.10297029702967431,inconsistent,5,0.0017770840385614968,improving,below_sector_average
+Fashion,528 Fashion,2026-05-04/2026-05-10,0.0003148148148148,1.8333333333334831,improving,3,0.0024237530619420295,improving,below_sector_average
+Fashion,99streetwear,2026-05-04/2026-05-10,0.0005769230769230111,0.0,stable,9,0.0024237530619420295,improving,below_sector_average
+Fashion,Angel shop PS,2026-04-13/2026-04-19,0.009761904761904734,-0.06818181818181701,inconsistent,1,0.0024237530619420295,improving,above_sector_average
+Fashion,Baby Bump,2026-04-06/2026-04-12,0.0004977777777777601,1.4888888888892153,inconsistent,5,0.0024237530619420295,improving,below_sector_average
+Fashion,Bella Kids,2026-05-04/2026-05-10,0.0005974842767295334,0.0,stable,12,0.0024237530619420295,improving,below_sector_average
+Fashion,EUROMODA,2023-10-02/2023-10-08,0.01029279279279275,0.22192513368984024,inconsistent,1,0.0024237530619420295,improving,above_sector_average
+Fashion,Fashion Shop Ramallah,2026-05-04/2026-05-10,0.00011313131313128938,0.3999999999999513,improving,5,0.0024237530619420295,improving,below_sector_average
+Fashion,Ghazala__store غزالة ستور,2026-05-04/2026-05-10,0.00046594982078849995,-0.48000000000000453,declining,1,0.0024237530619420295,improving,below_sector_average
+Fashion,Grand Shop,2026-05-04/2026-05-10,0.000548,0.0,stable,10,0.0024237530619420295,improving,below_sector_average
+Fashion,Grand Stores Mall,2026-05-04/2026-05-10,0.0005064599483203969,0.0,stable,9,0.0024237530619420295,improving,below_sector_average
+Fashion,Hala Fashion هلا فاشن,2026-05-04/2026-05-10,0.010444444444444444,0.0,stable,9,0.0024237530619420295,improving,above_sector_average
+Fashion,Hijjawi Fashion - الحجاوي للأزياء,2026-04-27/2026-05-03,3.696498054474708e-05,0.14457831325301207,improving,3,0.0024237530619420295,improving,below_sector_average
+Fashion,KOTON Palestine,2026-04-27/2026-05-03,0.00022690437601289998,0.7500000000001286,inconsistent,1,0.0024237530619420295,improving,below_sector_average
+Fashion,LOFT Palestine,2026-03-30/2026-04-05,0.019884638737097737,-0.31233595800524894,inconsistent,1,0.0024237530619420295,improving,above_sector_average
+Fashion,Lujain fashion,2026-04-27/2026-05-03,0.008074999999999938,-0.43475000000000097,declining,10,0.0024237530619420295,improving,above_sector_average
+Fashion,MAS CO,2026-05-04/2026-05-10,0.0005208333333332813,0.25000000000007505,improving,8,0.0024237530619420295,improving,below_sector_average
+Fashion,Mabella - مابيلا,2026-05-04/2026-05-10,0.0012701298701298439,3.890000000000369,improving,5,0.0024237530619420295,improving,below_sector_average
+Fashion,Mikkawi 1955,2026-05-04/2026-05-10,0.0014798250844762,-0.27683341427878205,declining,2,0.0024237530619420295,improving,below_sector_average
+Fashion,ROZAL,2026-05-04/2026-05-10,0.0002479757085020032,0.0,stable,13,0.0024237530619420295,improving,below_sector_average
+Fashion,Ronza Elegant,2026-05-04/2026-05-10,0.000714285714285675,0.0,stable,12,0.0024237530619420295,improving,below_sector_average
+Fashion,Shamsboutique,2026-05-04/2026-05-10,0.009826664089181,1.3461538461538458,inconsistent,2,0.0024237530619420295,improving,above_sector_average
+Fashion,Venus Boutique / فينوس بوتيك,2025-05-05/2025-05-11,1.2540894220283534e-05,0.0,stable,14,0.0024237530619420295,improving,below_sector_average
+Fashion,drift.for.men,2025-10-20/2025-10-26,0.01106,-0.17462686567164176,declining,1,0.0024237530619420295,improving,above_sector_average
+Fashion,جروان الدوار,2025-05-05/2025-05-11,0.0,0.0,stable,11,0.0024237530619420295,improving,below_sector_average
+Fashion,متجر الأميرات للسيدات,2026-05-04/2026-05-10,0.006249999999999958,0.0,stable,12,0.0024237530619420295,improving,above_sector_average
+Fashion,متجر تبارك للزي الشرعي,2026-04-27/2026-05-03,0.00039965694682672273,-0.19655172413793653,declining,1,0.0024237530619420295,improving,below_sector_average
+Gym,Hulk Gym / Diaa Shabaro,2025-07-28/2025-08-03,0.020786666666666665,0.08188757807078417,stable,1,0.039875481766973,improving,below_sector_average
+Gym,Pulse Gym & Fitness,2026-04-27/2026-05-03,0.018430674967882168,2.390909090909114,inconsistent,1,0.039875481766973,improving,below_sector_average
+Gym,Xtreme Fitness Ramallah,2026-02-02/2026-02-08,0.0303571428571428,0.0024570024570016447,inconsistent,1,0.039875481766973,improving,below_sector_average
+Influencers,Ahmed Sh Ajwa,2025-12-29/2026-01-04,0.0002969333333333,0.0,stable,1,0.0032105263157894,declining,below_sector_average
+Influencers,Al Jazeera English,2025-01-13/2025-01-19,0.00879090909090905,0.708480565371032,improving,1,0.0032105263157894,declining,above_sector_average
+Influencers,FPAIspal,2026-02-23/2026-03-01,0.0302554545454545,0.0,stable,1,0.0032105263157894,declining,above_sector_average
+Influencers,Fekreebrahem,2026-02-16/2026-02-22,0.0011366666666666,-0.16699977792584286,inconsistent,1,0.0032105263157894,declining,below_sector_average
+Influencers,Gintifada,2026-02-16/2026-02-22,0.0036890909090909,0.0,stable,1,0.0032105263157894,declining,above_sector_average
+Influencers,Hamdan ElDahdouh,2026-02-02/2026-02-08,0.0140063636363636,2.282275244993621,improving,1,0.0032105263157894,declining,above_sector_average
+Influencers,Hind Khoudary,2026-03-09/2026-03-15,0.0083663636363636,0.0,stable,1,0.0032105263157894,declining,above_sector_average
+Influencers,MIFTAH,2024-12-23/2024-12-29,0.001370909090909,0.0,stable,1,0.0032105263157894,declining,below_sector_average
+Influencers,Moath Kahlout,2026-03-09/2026-03-15,0.000990909090909,0.0,stable,1,0.0032105263157894,declining,below_sector_average
+Influencers,Motaz Azaiza,2026-04-27/2026-05-03,0.005916933333333316,0.8695285840670832,inconsistent,2,0.0032105263157894,declining,above_sector_average
+Influencers,Motaz Foundation,2026-03-16/2026-03-22,0.0010482111111110833,0.43614608229690033,inconsistent,1,0.0032105263157894,declining,below_sector_average
+Influencers,Nour Alsaqa,2024-12-30/2025-01-05,0.0791590909090909,1.7864000000000004,improving,1,0.0032105263157894,declining,above_sector_average
+Influencers,Plestia Alaqad,2024-12-23/2024-12-29,0.0096454545454545,0.0,stable,1,0.0032105263157894,declining,above_sector_average
+Influencers,The Tatreez Grove,2026-02-09/2026-02-15,0.0022445454545454,0.0,stable,1,0.0032105263157894,declining,below_sector_average
+Influencers,Yalda Hakim and Motaz Azaiza,2026-01-19/2026-01-25,0.0001484,0.0,stable,1,0.0032105263157894,declining,below_sector_average
+Influencers,aburob,2026-05-04/2026-05-10,0.003923976608187083,-0.5277142354390324,inconsistent,1,0.0032105263157894,declining,above_sector_average
+Influencers,ahmedalhenawi1,2025-12-01/2025-12-07,0.0132578947368421,0.0,stable,1,0.0032105263157894,declining,above_sector_average
+Supermarkets,Bravo Supermarket,2026-04-27/2026-05-03,0.001555555555555507,0.0,stable,8,0.2519689308238481,improving,below_sector_average
+Supermarkets,Family Market PS,2026-05-04/2026-05-10,0.5777589613322043,0.08582643751326113,stable,2,0.2519689308238481,improving,above_sector_average
+Supermarkets,Jumbo Supermarket,2026-05-04/2026-05-10,0.0066281031573872775,-0.1494845360824768,declining,3,0.2519689308238481,improving,below_sector_average
+Supermarkets,Katusha Supermarket,2025-12-22/2025-12-28,0.011124354390146933,1.1538461538461635,inconsistent,1,0.2519689308238481,improving,below_sector_average
+Supermarkets,Supermarket 25st,2025-03-31/2025-04-06,0.00041511000415106664,-0.8518518518518625,declining,1,0.2519689308238481,improving,below_sector_average

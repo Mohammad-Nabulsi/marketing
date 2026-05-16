@@ -1,0 +1,21 @@
+sector,business_name,post_date,post_type,engagement_rate,views_count,likes_count,comments_count,caption_length,hashtags_count,emoji_count,promo_post,posting_hour,anomaly_type,best_method,best_setting,anomaly_detection_scope
+Fashion,LOFT Palestine,2026-03-16,reel,0.0578324225865209,52500.0,250.0,4.0,133,0,2,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Fashion,Angel shop PS,2025-12-28,reel,0.0537857142857142,260000.0,614.0,139.0,265,0,1,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Fashion,Hala Fashion هلا فاشن,2026-05-06,reel,0.053,4000.0,50.0,3.0,362,1,10,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Fashion,Shamsboutique,2026-05-05,reel,0.0351826792963464,7081.0,23.0,3.0,21,0,1,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Fashion,متجر الأميرات للسيدات,2026-05-04,reel,0.0339285714285714,1000.0,170.0,20.0,133,0,6,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,Robian Restaurant,2024-12-18,Image,0.1426153846153846,0.0,920.0,7.0,178,3,2,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,Robian Restaurant,2024-10-01,Image,0.1396923076923077,0.0,894.0,14.0,87,1,1,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,Robian Restaurant,2024-10-06,Image,0.1346153846153846,0.0,863.0,12.0,87,1,1,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,REXOS Café & Restaurant,2026-04-18,Reel,0.1338095238095238,8100.0,5600.0,20.0,35,0,2,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,Robian Restaurant,2024-11-18,Reel,0.1193846153846153,42000.0,771.0,5.0,49,1,0,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Influencers,Nour Alsaqa,2024-12-31,reel,0.1299090909090909,2300000.0,140000.0,2900.0,144,0,0,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Influencers,aburob,2026-02-08,reel,0.0864122807017543,20400000.0,483000.0,9550.0,28,0,2,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Influencers,aburob,2026-01-18,reel,0.0531403508771929,15700000.0,300000.0,2900.0,6,0,3,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Influencers,Al Jazeera English,2025-01-15,reel,0.0124363636363636,206000.0,13500.0,180.0,136,3,0,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Gym,Xtreme Fitness Ramallah,2025-12-24,reel,0.0546875,24200.0,245.0,0.0,220,3,0,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Gym,Hulk Gym / Diaa Shabaro,2025-06-18,reel,0.03096,43500.0,774.0,0.0,112,0,8,True,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Supermarkets,Family Market PS,2026-05-02,reel,1.370025402201524,127000.0,3221.0,15.0,176,0,8,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Supermarkets,Family Market PS,2026-04-18,reel,1.1104995766299746,140000.0,2609.0,14.0,190,1,5,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Supermarkets,Family Market PS,2026-04-11,reel,0.7455546147332769,274000.0,1678.0,83.0,116,0,3,False,0.0,positive_anomaly,isolation_forest,contamination=0.05,sector_based
+Cafes/Restaurants,REXOS Café & Restaurant,2025-07-09,Image,2.380952380952381e-05,0.0,1.0,0.0,208,0,6,True,0.0,negative_anomaly,isolation_forest,contamination=0.05,sector_based

@@ -1,0 +1,5 @@
+level,entity,model,aggregation,changepoint_prior_scale,seasonality_mode,MAE,RMSE,MAPE,composite_score
+business,Vanilla Palestine,prophet,weekly,0.1,additive,0.04236990135544214,0.0642464024493951,7688.208808398711,3.0
+business,Vanilla Palestine,prophet,weekly,0.05,additive,0.042396206339923984,0.06428684108003511,7693.041454724924,2.9997884631285556
+business,Vanilla Palestine,prophet,weekly,0.05,multiplicative,0.41900644793538916,0.6352858446927209,75765.0553338551,0.001543424833929663
+business,Vanilla Palestine,prophet,weekly,0.1,multiplicative,0.41919979984445765,0.635580187054015,75800.14244376228,0.0
